@@ -2,10 +2,9 @@
   "name": "applygraphy-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Applygraphy - Smart Immigration Platform",
+  "description": "Applygraphy – Smart Immigration Platform",
   "scripts": {
     "build": "next build",
-    "clean": "rm -rf .next out dist",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
