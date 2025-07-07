@@ -10,84 +10,54 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useAuth } from "@/lib/auth/auth-provider"
-import { LoginModal } from "@/components/auth/login-modal"
-import { User, Settings, History, LogOut, ShoppingBag, FileText } from "lucide-react"
+import { User, Settings, LogOut, LogIn, UserPlus } from "lucide-react"
 
 export function UserMenu() {
-  const { user, logout } = useAuth()
-  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // This would come from your auth context
 
-  if (!user) {
+  if (!isLoggedIn) {
     return (
-      <>
-        <Button
-          onClick={() => setShowLoginModal(true)}
-          variant="outline"
-          size="sm"
-          className="border-[#FF6A5C] text-[#FF6A5C] hover:bg-[#FF6A5C] hover:text-white"
-        >
-          <User className="h-4 w-4 mr-2" />
-          ورود / ثبت نام
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" asChild>
+          <Link href="/auth?mode=signin">
+            <LogIn className="h-4 w-4 mr-2" />
+            ورود
+          </Link>
         </Button>
-        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
-      </>
+        <Button size="sm" asChild className="bg-[#02153D] hover:bg-[#02153D]/90">
+          <Link href="/auth?mode=signup">
+            <UserPlus className="h-4 w-4 mr-2" />
+            ثبت نام
+          </Link>
+        </Button>
+      </div>
     )
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-            <AvatarFallback className="bg-[#FF6A5C] text-white">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <User className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center justify-start gap-2 p-2">
-          <div className="flex flex-col space-y-1 leading-none">
-            <p className="font-medium">{user.name}</p>
-            <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>
-          </div>
-        </div>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem asChild>
           <Link href="/profile" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
-            <span>پروفایل</span>
+            <User className="h-4 w-4 mr-2" />
+            پروفایل من
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/profile?tab=history" className="cursor-pointer">
-            <History className="mr-2 h-4 w-4" />
-            <span>تاریخچه مشاوره‌ها</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/profile?tab=services" className="cursor-pointer">
-            <ShoppingBag className="mr-2 h-4 w-4" />
-            <span>خدمات خریداری شده</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/profile?tab=documents" className="cursor-pointer">
-            <FileText className="mr-2 h-4 w-4" />
-            <span>مرکز مدارک</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/profile?tab=settings" className="cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>تنظیمات</span>
+          <Link href="/dashboard" className="cursor-pointer">
+            <Settings className="h-4 w-4 mr-2" />
+            داشبورد
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>خروج</span>
+        <DropdownMenuItem onClick={() => setIsLoggedIn(false)} className="cursor-pointer text-red-600">
+          <LogOut className="h-4 w-4 mr-2" />
+          خروج
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

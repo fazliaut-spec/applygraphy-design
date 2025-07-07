@@ -1,14 +1,16 @@
 import type React from "react"
+import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { LanguageProvider } from "@/components/i18n/language-provider"
 import { AuthProvider } from "@/lib/auth/auth-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "اپلای‌گرافی - مشاوره تحصیل در خارج",
-  description: "بهترین مشاوره تحصیل در خارج از کشور",
+  title: "اپلای‌گرافی - پلتفرم هوشمند مهاجرت تحصیلی",
+  description: "بهترین پلتفرم برای مشاوره تحصیل در خارج، ویزا، و خدمات مهاجرت تحصیلی",
     generator: 'v0.dev'
 }
 
@@ -19,14 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fa" dir="rtl">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <LanguageProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

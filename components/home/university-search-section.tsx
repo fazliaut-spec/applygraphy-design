@@ -1,200 +1,146 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, MapPin, GraduationCap, DollarSign, Calendar } from "lucide-react"
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
+import { Search, MapPin, GraduationCap, Star, Filter } from "lucide-react"
+
+const popularUniversities = [
+  {
+    name: "دانشگاه تورنتو",
+    country: "کانادا",
+    ranking: "#18 جهان",
+    programs: "۷۰۰+ رشته",
+    rating: 4.8,
+    image: "/images/university-toronto.jpg",
+  },
+  {
+    name: "دانشگاه آکسفورد",
+    country: "انگلستان",
+    ranking: "#2 جهان",
+    programs: "۳۵۰+ رشته",
+    rating: 4.9,
+    image: "/images/university-oxford.jpg",
+  },
+  {
+    name: "دانشگاه MIT",
+    country: "آمریکا",
+    ranking: "#1 جهان",
+    programs: "۴۵۰+ رشته",
+    rating: 4.9,
+    image: "/images/university-mit.jpg",
+  },
+]
+
+const countries = [
+  { name: "کانادا", count: "۲۵۰+ دانشگاه", flag: "🇨🇦" },
+  { name: "آمریکا", count: "۵۰۰+ دانشگاه", flag: "🇺🇸" },
+  { name: "انگلستان", count: "۱۸۰+ دانشگاه", flag: "🇬🇧" },
+  { name: "آلمان", count: "۳۰۰+ دانشگاه", flag: "🇩🇪" },
+  { name: "استرالیا", count: "۱۲۰+ دانشگاه", flag: "🇦🇺" },
+  { name: "هلند", count: "۸۰+ دانشگاه", flag: "🇳🇱" },
+]
 
 export function UniversitySearchSection() {
+  const [searchQuery, setSearchQuery] = useState("")
+
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-[#02153D] mb-4">جستجوی دانشگاه‌های جهانی</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            بیش از ۱۰,۰۰۰ برنامه از دانشگاه‌های معتبر در بیش از ۵۰ کشور جهان
+          <h2 className="text-4xl font-bold text-[#02153D] mb-4">جستجوی دانشگاه</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            در میان هزاران دانشگاه معتبر جهان، بهترین گزینه را برای خود پیدا کنید
           </p>
+
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="نام دانشگاه، رشته یا کشور را جستجو کنید..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 pr-12 h-14 text-lg border-2 border-gray-200 focus:border-[#FF6A5C]"
+              />
+              <Button className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#FF6A5C] hover:bg-[#FF6A5C]/90" size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                فیلتر
+              </Button>
+            </div>
+          </div>
         </div>
 
-        <Card className="mb-12 shadow-lg border-0">
-          <CardHeader className="bg-gradient-to-r from-[#02153D] to-[#FF6A5C] text-white rounded-t-lg">
-            <CardTitle className="text-2xl flex items-center gap-3">
-              <Search className="h-6 w-6" />
-              جستجوی پیشرفته
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">رشته تحصیلی</label>
-                <div className="relative">
-                  <Input placeholder="مهندسی، پزشکی، هنر و..." className="pl-10" />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">کشور</label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="انتخاب کشور" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="us">ایالات متحده</SelectItem>
-                    <SelectItem value="uk">انگلستان</SelectItem>
-                    <SelectItem value="ca">کانادا</SelectItem>
-                    <SelectItem value="au">استرالیا</SelectItem>
-                    <SelectItem value="de">آلمان</SelectItem>
-                    <SelectItem value="it">ایتالیا</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">مقطع تحصیلی</label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="انتخاب مقطع" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="bachelor">کارشناسی</SelectItem>
-                    <SelectItem value="master">کارشناسی ارشد</SelectItem>
-                    <SelectItem value="phd">دکترا</SelectItem>
-                    <SelectItem value="postdoc">پسادکترا</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex justify-between mt-6">
-              <Button variant="outline" className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                فیلترهای بیشتر
-              </Button>
-
-              <Button className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90 text-white">جستجو</Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Card className="hover:shadow-lg transition-all duration-300">
-            
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-[#02153D] mb-1">دانشگاه آکسفورد</h3>
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <MapPin className="h-4 w-4 ml-1" />
-                    انگلستان، آکسفورد
-                  </div>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center">
-                  <img src="/placeholder.svg?height=48&width=48" alt="لوگوی دانشگاه" className="max-h-10" />
-                </div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm">
-                  <GraduationCap className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">۲۰۰+ برنامه تحصیلی</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <DollarSign className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">شهریه سالانه: ۲۵,۰۰۰ پوند</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <Calendar className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">مهلت درخواست: ۱۵ دی ۱۴۰۳</span>
-                </div>
-              </div>
-
-              <Button asChild className="w-full bg-[#02153D] hover:bg-[#02153D]/90 text-white">
-                <Link href="/universities/oxford">مشاهده جزئیات</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-all duration-300">
-            <div className="text-[#02153D] text-sm">
-              <div className="absolute bottom-0 left-0 bg-[#02153D] text-white px-3 py-1 text-sm">رتبه جهانی: ۳۲</div>
-            </div>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-[#02153D] mb-1">دانشگاه تورنتو</h3>
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <MapPin className="h-4 w-4 ml-1" />
-                    کانادا، تورنتو
-                  </div>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center">
-                  <img src="/placeholder.svg?height=48&width=48" alt="لوگوی دانشگاه" className="max-h-10" />
-                </div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm">
-                  <GraduationCap className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">۱۸۰+ برنامه تحصیلی</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <DollarSign className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">شهریه سالانه: ۳۰,۰۰۰ دلار کانادا</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <Calendar className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">مهلت درخواست: ۱۰ بهمن ۱۴۰۳</span>
-                </div>
-              </div>
-
-              <Button asChild className="w-full bg-[#02153D] hover:bg-[#02153D]/90 text-white">
-                <Link href="/universities/toronto">مشاهده جزئیات</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-all duration-300">
-            
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-[#02153D] mb-1">دانشگاه میلان</h3>
-                  <div className="flex items-center text-gray-600 text-sm">
-                    <MapPin className="h-4 w-4 ml-1" />
-                    ایتالیا، میلان
-                  </div>
-                </div>
-                <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center">
-                  <img src="/placeholder.svg?height=48&width=48" alt="لوگوی دانشگاه" className="max-h-10" />
-                </div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-sm">
-                  <GraduationCap className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">۱۵۰+ برنامه تحصیلی</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <DollarSign className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">شهریه سالانه: ۳,۰۰۰ یورو</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <Calendar className="h-4 w-4 ml-2 text-[#FF6A5C]" />
-                  <span className="text-gray-700">مهلت درخواست: ۵ اسفند ۱۴۰۳</span>
-                </div>
-              </div>
-
-              <Button asChild className="w-full bg-[#02153D] hover:bg-[#02153D]/90 text-white">
-                <Link href="/universities/milan">مشاهده جزئیات</Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Countries */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-bold text-[#02153D] mb-8 text-center">کشورهای محبوب</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {countries.map((country, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer group">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{country.flag}</div>
+                  <h4 className="font-bold text-[#02153D] mb-1">{country.name}</h4>
+                  <p className="text-sm text-gray-600">{country.count}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
-        <div className="text-center mt-12">
-          <Button asChild size="lg" className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90 text-white px-8 py-3">
-            <Link href="/universities">مشاهده همه دانشگاه‌ها</Link>
+        {/* Popular Universities */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-[#02153D] mb-8 text-center">دانشگاه‌های محبوب</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {popularUniversities.map((university, index) => (
+              <Card key={index} className="hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <div className="relative h-48">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                  <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1">
+                    <span className="text-sm font-semibold text-[#02153D]">{university.ranking}</span>
+                  </div>
+                  <div className="absolute bottom-4 right-4 z-20 text-white">
+                    <div className="flex items-center gap-1 mb-2">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm font-semibold">{university.rating}</span>
+                    </div>
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <h4 className="text-xl font-bold text-[#02153D] mb-2">{university.name}</h4>
+                  <div className="flex items-center gap-2 text-gray-600 mb-3">
+                    <MapPin className="h-4 w-4" />
+                    <span>{university.country}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600 mb-4">
+                    <GraduationCap className="h-4 w-4" />
+                    <span>{university.programs}</span>
+                  </div>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full border-[#FF6A5C] text-[#FF6A5C] hover:bg-[#FF6A5C] hover:text-white bg-transparent"
+                  >
+                    <Link href={`/universities/${university.name.toLowerCase().replace(/\s+/g, "-")}`}>
+                      مشاهده جزئیات
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <Button asChild size="lg" className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90 text-white px-8">
+            <Link href="/universities">
+              مشاهده تمام دانشگاه‌ها
+              <Search className="mr-2 h-5 w-5" />
+            </Link>
           </Button>
         </div>
       </div>

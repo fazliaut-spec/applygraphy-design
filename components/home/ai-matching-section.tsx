@@ -1,96 +1,111 @@
+"use client"
+
+import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Brain, CheckCircle, ChevronLeft } from "lucide-react"
-import Link from "next/link"
+import { Brain, Target, TrendingUp, CheckCircle } from "lucide-react"
+
+const benefits = [
+  {
+    icon: Target,
+    title: "تطبیق دقیق",
+    description: "بر اساس پروفایل تحصیلی و اهداف شما",
+  },
+  {
+    icon: TrendingUp,
+    title: "تحلیل احتمال پذیرش",
+    description: "محاسبه دقیق شانس پذیرش در هر دانشگاه",
+  },
+  {
+    icon: CheckCircle,
+    title: "پیشنهادات شخصی‌سازی شده",
+    description: "توصیه‌های منحصر به فرد برای هر فرد",
+  },
+]
 
 export function AiMatchingSection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#02153D] to-[#02153D]/90">
+    <section className="py-20 bg-gradient-to-br from-[#02153D] to-[#1a2951] text-white">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-white">
+          {/* Content */}
+          <div>
             <div className="flex items-center gap-3 mb-6">
-              <Brain className="h-10 w-10 text-[#FF6A5C]" />
-              <h2 className="text-3xl font-bold">تطبیق هوشمند با هوش مصنوعی</h2>
+              <div className="p-3 bg-[#FF6A5C] rounded-full">
+                <Brain className="h-8 w-8 text-white" />
+              </div>
+              <span className="text-[#FF6A5C] font-semibold text-lg">هوش مصنوعی</span>
             </div>
 
-            <p className="text-xl mb-8 leading-relaxed">
-              سیستم هوش مصنوعی پیشرفته ما بهترین دانشگاه‌ها و برنامه‌ها را بر اساس پروفایل، اهداف و ترجیحات شما پیشنهاد
-              می‌دهد.
+            <h2 className="text-4xl font-bold mb-6">
+              سیستم تطبیق هوشمند
+              <br />
+              <span className="text-[#FF6A5C]">اپلای‌گرافی</span>
+            </h2>
+
+            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+              با استفاده از الگوریتم‌های پیشرفته هوش مصنوعی، بهترین دانشگاه‌ها و رشته‌های تحصیلی متناسب با پروفایل و اهداف
+              شما را پیدا کنید.
             </p>
 
-            <div className="space-y-4 mb-8">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-[#FF6A5C] mt-1 flex-shrink-0" />
-                <p>تجزیه و تحلیل بیش از ۱۰,۰۰۰ برنامه از دانشگاه‌های معتبر جهان</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-[#FF6A5C] mt-1 flex-shrink-0" />
-                <p>در نظر گرفتن نمرات، سوابق تحصیلی، مهارت‌های زبانی و بودجه شما</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-[#FF6A5C] mt-1 flex-shrink-0" />
-                <p>پیشنهاد برنامه‌هایی که بیشترین شانس پذیرش را دارید</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-6 w-6 text-[#FF6A5C] mt-1 flex-shrink-0" />
-                <p>مقایسه دقیق برنامه‌ها و دانشگاه‌ها در کنار هم</p>
-              </div>
+            {/* Benefits */}
+            <div className="space-y-6 mb-8">
+              {benefits.map((benefit, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <div className="p-2 bg-[#FF6A5C]/20 rounded-lg">
+                    <benefit.icon className="h-6 w-6 text-[#FF6A5C]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">{benefit.title}</h3>
+                    <p className="text-gray-300">{benefit.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <Button asChild size="lg" className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90 text-white text-lg px-8 py-3">
-              <Link href="/ai-matching">
-                امتحان کنید
-                <ChevronLeft className="mr-2 h-5 w-5" />
-              </Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button asChild size="lg" className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90 text-white">
+                <Link href="/smart-matching">شروع تطبیق هوشمند</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-[#02153D] bg-transparent"
+              >
+                <Link href="/ai-matching">اطلاعات بیشتر</Link>
+              </Button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="bg-white/10 backdrop-blur-sm border-0 text-white">
-              <CardContent className="p-6">
-                <div className="text-center mb-4">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#FF6A5C]/20 mb-4">
-                    <span className="text-xl font-bold text-[#FF6A5C]">۹۵%</span>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">دقت تطبیق</h3>
-                  <p className="text-sm text-white/80">الگوریتم ما با دقت بالا برنامه‌های مناسب را پیشنهاد می‌دهد</p>
+          {/* Visual */}
+          <div className="relative">
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <CardContent className="p-8">
+                <div className="relative h-80 rounded-lg overflow-hidden mb-6">
+                  <Image src="/images/ai-matching-demo.jpg" alt="سیستم تطبیق هوشمند" fill className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
-              </CardContent>
-            </Card>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-0 text-white">
-              <CardContent className="p-6">
-                <div className="text-center mb-4">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#FF6A5C]/20 mb-4">
-                    <span className="text-xl font-bold text-[#FF6A5C]">۵۰+</span>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">کشورهای تحت پوشش</h3>
-                  <p className="text-sm text-white/80">دسترسی به دانشگاه‌های معتبر در بیش از ۵۰ کشور جهان</p>
-                </div>
-              </CardContent>
-            </Card>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold mb-2">تحلیل هوشمند پروفایل</h3>
+                  <p className="text-gray-300 mb-4">سیستم ما بیش از ۵۰ پارامتر مختلف را تحلیل می‌کند</p>
 
-            <Card className="bg-white/10 backdrop-blur-sm border-0 text-white">
-              <CardContent className="p-6">
-                <div className="text-center mb-4">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#FF6A5C]/20 mb-4">
-                    <span className="text-xl font-bold text-[#FF6A5C]">۱۰K+</span>
+                  <div className="grid grid-cols-3 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-[#FF6A5C]">۱۰۰۰+</div>
+                      <div className="text-sm text-gray-300">دانشگاه</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[#FF6A5C]">۹۵%</div>
+                      <div className="text-sm text-gray-300">دقت</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-[#FF6A5C]">۲۴/۷</div>
+                      <div className="text-sm text-gray-300">دسترسی</div>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">برنامه‌های تحصیلی</h3>
-                  <p className="text-sm text-white/80">بیش از ۱۰,۰۰۰ برنامه تحصیلی در مقاطع مختلف</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/10 backdrop-blur-sm border-0 text-white">
-              <CardContent className="p-6">
-                <div className="text-center mb-4">
-                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#FF6A5C]/20 mb-4">
-                    <span className="text-xl font-bold text-[#FF6A5C]">۲۴/۷</span>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">پشتیبانی هوشمند</h3>
-                  <p className="text-sm text-white/80">دسترسی به دستیار هوش مصنوعی در تمام ساعات شبانه‌روز</p>
                 </div>
               </CardContent>
             </Card>

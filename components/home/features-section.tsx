@@ -1,91 +1,44 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Search,
-  Brain,
-  FileText,
-  DollarSign,
-  MessageSquare,
-  Globe,
-  Users,
-  Shield,
-  BookOpen,
-  Briefcase,
-  Bell,
-  Smartphone,
-  Languages,
-  UserPlus,
-} from "lucide-react"
+"use client"
+
+import { Card, CardContent } from "@/components/ui/card"
+import { Brain, Search, Users, Award, Clock, Shield } from "lucide-react"
 
 const features = [
   {
-    title: "جستجوی دانشگاه‌های جهانی",
-    description: "جستجو در بین ۱۰,۰۰۰+ برنامه از ۵۰+ کشور با فیلترهای پیشرفته",
-    icon: Search,
-  },
-  {
-    title: "تطبیق هوش مصنوعی",
-    description: "پیشنهاد برنامه‌های متناسب با پروفایل، اهداف و ترجیحات شما",
     icon: Brain,
+    title: "هوش مصنوعی پیشرفته",
+    description: "سیستم تطبیق هوشمند که بهترین فرصت‌های تحصیلی را برای شما پیدا می‌کند",
+    color: "from-purple-500 to-pink-500",
   },
   {
-    title: "مدیریت درخواست",
-    description: "پیگیری تمام درخواست‌ها در یک مکان با چک‌لیست‌های شخصی‌سازی شده",
-    icon: FileText,
+    icon: Search,
+    title: "جستجوی پیشرفته",
+    description: "جستجو در هزاران دانشگاه معتبر جهان با فیلترهای دقیق و کاربردی",
+    color: "from-blue-500 to-cyan-500",
   },
   {
-    title: "یابنده بورسیه",
-    description: "کشف فرصت‌های تامین مالی با بررسی خودکار واجد شرایط بودن",
-    icon: DollarSign,
-  },
-  {
-    title: "پشتیبانی انجمن",
-    description: "ارتباط با دانشجویان، مربیان و فارغ‌التحصیلان از طریق پلتفرم انجمن",
-    icon: MessageSquare,
-  },
-  {
-    title: "راهنمای ویزا و جابجایی",
-    description: "راهنمایی گام به گام برای درخواست ویزا و آماده‌سازی قبل از سفر",
-    icon: Globe,
-  },
-  {
-    title: "خدمات متخصص",
-    description: "دسترسی به بررسی حرفه‌ای اسناد، ترجمه و خدمات آماده‌سازی آزمون",
     icon: Users,
+    title: "مشاوران متخصص",
+    description: "تیم مجرب مشاوران تحصیلی که سال‌ها تجربه در این حوزه دارند",
+    color: "from-green-500 to-emerald-500",
   },
   {
-    title: "امنیت و حریم خصوصی",
-    description: "محافظت از اسناد و اطلاعات شخصی شما با امنیت سطح سازمانی",
+    icon: Award,
+    title: "نرخ موفقیت بالا",
+    description: "بیش از ۹۸٪ از دانشجویان ما موفق به دریافت پذیرش از دانشگاه‌های مطلوب شده‌اند",
+    color: "from-orange-500 to-red-500",
+  },
+  {
+    icon: Clock,
+    title: "پشتیبانی ۲۴/۷",
+    description: "تیم پشتیبانی ما همیشه آماده پاسخگویی به سوالات شما است",
+    color: "from-indigo-500 to-purple-500",
+  },
+  {
     icon: Shield,
-  },
-  {
-    title: "دوره‌های آمادگی آزمون",
-    description: "دوره‌های تخصصی برای آزمون‌های IELTS، TOEFL، GRE، IMAT و SAT",
-    icon: BookOpen,
-  },
-  {
-    title: "مرکز کارآموزی و شغل",
-    description: "فهرست فرصت‌های شغلی و کارآموزی برای دانشجویان و فارغ‌التحصیلان",
-    icon: Briefcase,
-  },
-  {
-    title: "یادآوری خودکار",
-    description: "یادآوری خودکار برای مهلت‌ها و وظایف مهم در فرآیند درخواست",
-    icon: Bell,
-  },
-  {
-    title: "سازگاری با موبایل",
-    description: "طراحی واکنش‌گرا و اعلان‌های فشاری برای مهلت‌ها و به‌روزرسانی‌ها",
-    icon: Smartphone,
-  },
-  {
-    title: "پشتیبانی چند زبانه",
-    description: "پشتیبانی از چندین زبان و دسترسی‌پذیری برای کاربران با ناتوانی‌ها",
-    icon: Languages,
-  },
-  {
-    title: "برندسازی شخصی",
-    description: "پروفایل‌های عمومی دانشجویان (اختیاری) برای شبکه‌سازی و ارتباط با استادان",
-    icon: UserPlus,
+    title: "تضمین کیفیت",
+    description: "تمام خدمات ما با ضمانت کیفیت و رضایت کامل ارائه می‌شود",
+    color: "from-teal-500 to-blue-500",
   },
 ]
 
@@ -93,25 +46,27 @@ export function FeaturesSection() {
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="font-bold text-[#02153D] mb-4 text-2xl">ویژگی‌های اپلای‌گرافی</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">همه چیزهایی که برای سفر تحصیل در خارج نیاز دارید</p>
+          <h2 className="text-4xl font-bold text-[#02153D] mb-4">چرا اپلای‌گرافی؟</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            ویژگی‌هایی که ما را از سایر مراکز مشاوره متمایز می‌کند
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {features.map((feature) => (
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
             <Card
-              key={feature.title}
-              className="text-center hover:shadow-lg transition-shadow border-r-4 border-r-[#FF6A5C]"
+              key={index}
+              className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-gray-50 to-white"
             >
-              <CardHeader>
-                <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#FF6A5C] to-[#02153D]">
-                  <feature.icon className="h-6 w-6 text-white" />
+              <CardContent className="p-8 text-center">
+                <div className={`inline-flex p-4 rounded-full bg-gradient-to-r ${feature.color} mb-6`}>
+                  <feature.icon className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-[#02153D] text-sm">{feature.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-sm">{feature.description}</CardDescription>
+                <h3 className="text-xl font-bold text-[#02153D] mb-4">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </CardContent>
             </Card>
           ))}

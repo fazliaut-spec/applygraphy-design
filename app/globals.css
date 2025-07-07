@@ -66,10 +66,11 @@
   body {
     @apply bg-background text-foreground;
     font-family: "Vazirmatn", "Tahoma", "Arial", system-ui, sans-serif;
+    direction: rtl;
   }
 }
 
-/* Add font utility class */
+/* Font utility class */
 .font-vazirmatn {
   font-family: "Vazirmatn", "Tahoma", "Arial", system-ui, sans-serif;
 }
@@ -211,4 +212,43 @@ html[dir="rtl"] ::-webkit-scrollbar-thumb:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Fix for layout issues */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
 }
