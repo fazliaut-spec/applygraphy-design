@@ -1,31 +1,45 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, captchaToken } = await request.json()
+    const { name, email, password, recaptchaToken } = await request.json()
 
-    // Verify reCAPTCHA token
-    const recaptchaResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`,
-    })
-
-    const recaptchaData = await recaptchaResponse.json()
-
-    if (!recaptchaData.success) {
+    // Verify reCAPTCHA
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken)
+    if (!isRecaptchaValid) {
       return NextResponse.json({ error: "reCAPTCHA verification failed" }, { status: 400 })
     }
 
-    // TODO: Implement actual user creation with Supabase
-    // For now, just simulate success
-    console.log("Creating user:", { email, password })
+    // Validate input
+    if (!name || !email || !password) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 })
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json({ error: "Password must be at least 8 characters long" }, { status: 400 })
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
+    }
+
+    // TODO: Integrate with Supabase or your preferred auth provider
+    // For now, we'll simulate a successful signup
+    console.log("User signup attempt:", { name, email })
+
+    // Simulate email verification process
+    // In a real app, you would:
+    // 1. Hash the password
+    // 2. Store user in database
+    // 3. Send verification email
+    // 4. Return success response
 
     return NextResponse.json({
-      success: true,
-      message: "User created successfully",
+      message: "Account created successfully! Please check your email for verification.",
+      user: { name, email },
     })
   } catch (error) {
     console.error("Signup error:", error)

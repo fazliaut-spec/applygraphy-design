@@ -1,31 +1,41 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, captchaToken } = await request.json()
+    const { email, password, recaptchaToken } = await request.json()
 
-    // Verify reCAPTCHA token
-    const recaptchaResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`,
-    })
-
-    const recaptchaData = await recaptchaResponse.json()
-
-    if (!recaptchaData.success) {
+    // Verify reCAPTCHA
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken)
+    if (!isRecaptchaValid) {
       return NextResponse.json({ error: "reCAPTCHA verification failed" }, { status: 400 })
+    }
+
+    // Validate input
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
     }
 
     // TODO: Implement actual user authentication with Supabase
     // For now, just simulate success
-    console.log("Signing in user:", { email, password })
+    console.log("User signin attempt:", { email })
+
+    // Simulate authentication process
+    // In a real app, you would:
+    // 1. Verify credentials against database
+    // 2. Create session/JWT token
+    // 3. Set secure cookies
+    // 4. Return user data
 
     return NextResponse.json({
-      success: true,
-      message: "User signed in successfully",
+      message: "Signed in successfully!",
+      user: { email },
     })
   } catch (error) {
     console.error("Signin error:", error)
