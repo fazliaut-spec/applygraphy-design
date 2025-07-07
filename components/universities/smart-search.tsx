@@ -1,144 +1,171 @@
 "use client"
 
-/**
- * SmartUniversitySearch – real-time university search using the free
- * https://universities.hipolabs.com/&nbsp;API.
- *
- * Named export is required by other modules 👉 we export BOTH the named and
- * default versions.
- */
-
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useState, useEffect } from "react"
+import { Search, MapPin, Users, Globe } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Search, Globe, ExternalLink } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-type University = {
+interface University {
   name: string
   country: string
-  state_province: string | null
   alpha_two_code: string
-  domains: string[]
   web_pages: string[]
-}
-
-const POPULAR_COUNTRIES = ["United States", "United Kingdom", "Canada", "Germany", "Italy", "Australia", "Iran"]
-
-async function fetchUniversities(name?: string, country?: string): Promise<University[]> {
-  const params = new URLSearchParams()
-  if (name) params.append("name", name)
-  if (country) params.append("country", country)
-  // Free public API → no key required.
-  const res = await fetch(`https://universities.hipolabs.com/search?${params.toString()}`)
-  if (!res.ok) throw new Error("Failed to fetch universities")
-  return res.json()
+  domains: string[]
+  state_province?: string
 }
 
 export function SmartUniversitySearch() {
-  const [name, setName] = useState("")
-  const [country, setCountry] = useState("all")
   const [universities, setUniversities] = useState<University[]>([])
+  const [filteredUniversities, setFilteredUniversities] = useState<University[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCountry, setSelectedCountry] = useState<string>("all")
   const [loading, setLoading] = useState(false)
-  const [searched, setSearched] = useState(false)
+  const [countries, setCountries] = useState<string[]>([])
 
-  const searchHandler = async () => {
-    setLoading(true)
-    setSearched(true)
-    try {
-      const result = await fetchUniversities(name || undefined, country === "all" ? undefined : country)
-      setUniversities(result.slice(0, 30)) // limit to 30 for brevity
-    } catch (e) {
-      console.error(e)
-      setUniversities([])
-    } finally {
-      setLoading(false)
+  // Fetch universities from free API
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      setLoading(true)
+      try {
+        // Using free Universities API
+        const response = await fetch("http://universities.hipolabs.com/search?limit=500")
+        const data = await response.json()
+        setUniversities(data)
+        setFilteredUniversities(data.slice(0, 20)) // Show first 20 initially
+
+        // Extract unique countries
+        const uniqueCountries = [...new Set(data.map((uni: University) => uni.country))].sort()
+        setCountries(uniqueCountries)
+      } catch (error) {
+        console.error("Error fetching universities:", error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }
+
+    fetchUniversities()
+  }, [])
+
+  // Filter universities based on search and country
+  useEffect(() => {
+    let filtered = universities
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (uni) =>
+          uni.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          uni.country.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+    }
+
+    if (selectedCountry !== "all") {
+      filtered = filtered.filter((uni) => uni.country === selectedCountry)
+    }
+
+    setFilteredUniversities(filtered.slice(0, 50)) // Limit to 50 results
+  }, [searchTerm, selectedCountry, universities])
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="w-5 h-5" />
-            جستجوی هوشمند دانشگاه‌ها
-          </CardTitle>
-          <CardDescription>نام یا کشور دانشگاه را وارد کنید</CardDescription>
-        </CardHeader>
+      {/* Search Header */}
+      <div className="text-center space-y-4">
+        <h1 className="text-3xl font-bold">جستجوی هوشمند دانشگاه‌ها</h1>
+        <p className="text-muted-foreground">بیش از {universities.length} دانشگاه از سراسر جهان</p>
+      </div>
 
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input dir="rtl" placeholder="نام دانشگاه..." value={name} onChange={(e) => setName(e.target.value)} />
+      {/* Search Controls */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="نام دانشگاه یا کشور را جستجو کنید..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
 
-            <Select value={country} onValueChange={setCountry}>
-              <SelectTrigger>
-                <SelectValue placeholder="کشور را انتخاب کنید" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">همه کشورها</SelectItem>
-                {POPULAR_COUNTRIES.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="انتخاب کشور" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">همه کشورها</SelectItem>
+            {countries.map((country) => (
+              <SelectItem key={country} value={country}>
+                {country}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-          <Button disabled={loading} onClick={searchHandler} className="w-full">
-            {loading ? "در حال جستجو..." : "جستجو"}
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-muted-foreground">در حال بارگذاری دانشگاه‌ها...</p>
+        </div>
+      )}
 
-      {searched && (
-        <>
-          <h3 className="font-semibold">نتایج ({universities.length} دانشگاه)</h3>
+      {/* Results */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {filteredUniversities.map((university, index) => (
+          <Card key={index} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-lg line-clamp-2">{university.name}</CardTitle>
+              <CardDescription className="flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                {university.country}
+                {university.state_province && `, ${university.state_province}`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <Badge variant="secondary">{university.alpha_two_code}</Badge>
+              </div>
 
-          {universities.length === 0 ? (
-            <p className="text-muted-foreground">هیچ دانشگاهی مطابق معیار شما یافت نشد.</p>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {universities.map((u) => (
-                <Card key={`${u.name}-${u.country}`} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">{u.name}</CardTitle>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4" />
-                      {u.country}
-                      {u.state_province ? `, ${u.state_province}` : ""}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Badge variant="secondary" className="text-xs">
-                      {u.alpha_two_code}
-                    </Badge>
+              {university.web_pages.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-transparent"
+                  onClick={() => window.open(university.web_pages[0], "_blank")}
+                >
+                  مشاهده وب‌سایت
+                </Button>
+              )}
 
-                    {u.web_pages?.[0] && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full bg-transparent"
-                        onClick={() => window.open(u.web_pages[0], "_blank")}
-                      >
-                        <Globe className="w-4 h-4 mr-2" />
-                        وب‌سایت
-                        <ExternalLink className="w-3 h-3 ml-1" />
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </>
+              <div className="text-xs text-muted-foreground">دامنه: {university.domains[0]}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* No Results */}
+      {!loading && filteredUniversities.length === 0 && (
+        <div className="text-center py-8">
+          <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">دانشگاهی یافت نشد</h3>
+          <p className="text-muted-foreground">لطفاً کلمات کلیدی دیگری امتحان کنید</p>
+        </div>
+      )}
+
+      {/* Results Count */}
+      {!loading && filteredUniversities.length > 0 && (
+        <div className="text-center text-sm text-muted-foreground">
+          نمایش {filteredUniversities.length} دانشگاه از {universities.length} دانشگاه
+        </div>
       )}
     </div>
   )
 }
 
-// default export keeps backward compatibility with existing imports
+// Named export for the component
+
+// Default export
 export default SmartUniversitySearch
