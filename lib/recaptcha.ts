@@ -1,7 +1,15 @@
 //
-// Public Google reCAPTCHA (v2 / v3) site-key.
-// Replace the placeholder string with your real key.
-// The corresponding secret key stays in the Vercel dashboard
-// as RECAPTCHA_SECRET_KEY and is used only on the server.
+// lib/recaptcha.ts
 //
-export const RECAPTCHA_SITE_KEY = "PASTE-YOUR-PUBLIC-SITE-KEY-HERE"
+//  ----------------------
+//  This file contains ONLY the PUBLIC Google reCAPTCHA site-key,
+//  which is safe to ship to the browser.
+//
+//  • Replace the test key below with your own live key from
+//    https://www.google.com/recaptcha/admin
+//  • Keep the secret key server-side (e.g. Vercel env
+//    variable  RECAPTCHA_SECRET_KEY ).
+//
+//  Documentation: https://developers.google.com/recaptcha/docs/v3
+//  ----------------------
+export const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // ⬅️ TEST key

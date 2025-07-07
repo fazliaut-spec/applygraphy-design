@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 
@@ -10,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail } from "lucide-react"
+import { Mail, Eye, EyeOff } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 interface AuthModalProps {
@@ -19,7 +18,10 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ open = false, onOpenChange = () => {} }: AuthModalProps) {
+  const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,19 +43,30 @@ export default function AuthModal({ open = false, onOpenChange = () => {} }: Aut
     setError(null)
 
     try {
-      // 🔒  SEND { email, captchaToken } to a server-side action / route
-      //      that validates the captcha with RECAPTCHA_SECRET_KEY
-      await new Promise((r) => setTimeout(r, 800))
+      // Choose the correct API endpoint
+      const endpoint = isLogin ? "/api/auth/signin" : "/api/auth/signup"
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, captchaToken }),
+      })
+
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || "Authentication failed")
 
       toast({
         title: "موفقیت!",
-        description: "درخواست شما با موفقیت ارسال شد.",
+        description: isLogin ? "با موفقیت وارد شدید." : "حساب کاربری شما ایجاد شد.",
       })
+
+      // Reset form
       setEmail("")
+      setPassword("")
       setCaptchaToken(null)
       onOpenChange(false)
-    } catch {
-      setError("مشکلی پیش آمد. لطفاً دوباره تلاش کنید.")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "مشکلی پیش آمد. لطفاً دوباره تلاش کنید.")
     } finally {
       setSubmitting(false)
     }
@@ -63,27 +76,55 @@ export default function AuthModal({ open = false, onOpenChange = () => {} }: Aut
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md" dir="rtl">
         <DialogHeader>
-          <DialogTitle className="text-center">ورود / ثبت‌نام</DialogTitle>
+          <DialogTitle className="text-center">{isLogin ? "ورود به حساب کاربری" : "ایجاد حساب کاربری"}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="email"
-            placeholder="you@example.com"
+            placeholder="ایمیل شما"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             className="text-right"
           />
 
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="رمز عبور"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="text-right pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+
           <div className="flex justify-center">
             <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setCaptchaToken(token)} hl="fa" />
           </div>
 
           <Button type="submit" disabled={submitting || !captchaToken} className="w-full">
-            <Mail className="w-4 h-4 mr-2" />
-            {submitting ? "در حال ارسال..." : "ادامه"}
+            <Mail className="w-4 h-4 ml-2" />
+            {submitting ? "در حال پردازش..." : isLogin ? "ورود" : "ثبت‌نام"}
           </Button>
+
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={() => setIsLogin((v) => !v)}
+              className="text-sm text-blue-600 hover:text-blue-800 underline"
+            >
+              {isLogin ? "حساب کاربری ندارید؟ ثبت‌نام کنید" : "حساب کاربری دارید؟ وارد شوید"}
+            </button>
+          </div>
         </form>
 
         {error && (

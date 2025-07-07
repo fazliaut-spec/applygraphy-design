@@ -94,7 +94,7 @@ export function FeaturesSection() {
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-[#02153D] mb-4">ویژگی‌های اپلای‌گرافی</h2>
+          <h2 className="font-bold text-[#02153D] mb-4 text-2xl">ویژگی‌های اپلای‌گرافی</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">همه چیزهایی که برای سفر تحصیل در خارج نیاز دارید</p>
         </div>
 
@@ -108,7 +108,7 @@ export function FeaturesSection() {
                 <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#FF6A5C] to-[#02153D]">
                   <feature.icon className="h-6 w-6 text-white" />
                 </div>
-                <CardTitle className="text-lg text-[#02153D]">{feature.title}</CardTitle>
+                <CardTitle className="text-[#02153D] text-sm">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-sm">{feature.description}</CardDescription>

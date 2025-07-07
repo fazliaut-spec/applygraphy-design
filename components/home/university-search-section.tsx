@@ -79,9 +79,7 @@ export function UniversitySearchSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <Card className="hover:shadow-lg transition-all duration-300">
-            <div className="h-40 bg-[url('/placeholder.svg?height=160&width=320')] bg-cover bg-center relative">
-              <div className="absolute bottom-0 left-0 bg-[#02153D] text-white px-3 py-1 text-sm">رتبه جهانی: ۲۵</div>
-            </div>
+            
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -118,7 +116,7 @@ export function UniversitySearchSection() {
           </Card>
 
           <Card className="hover:shadow-lg transition-all duration-300">
-            <div className="h-40 bg-[url('/placeholder.svg?height=160&width=320')] bg-cover bg-center relative">
+            <div className="text-[#02153D] text-sm">
               <div className="absolute bottom-0 left-0 bg-[#02153D] text-white px-3 py-1 text-sm">رتبه جهانی: ۳۲</div>
             </div>
             <CardContent className="p-6">
@@ -157,9 +155,7 @@ export function UniversitySearchSection() {
           </Card>
 
           <Card className="hover:shadow-lg transition-all duration-300">
-            <div className="h-40 bg-[url('/placeholder.svg?height=160&width=320')] bg-cover bg-center relative">
-              <div className="absolute bottom-0 left-0 bg-[#02153D] text-white px-3 py-1 text-sm">رتبه جهانی: ۴۵</div>
-            </div>
+            
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>

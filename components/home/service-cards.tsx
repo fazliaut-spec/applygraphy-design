@@ -68,7 +68,7 @@ export function ServiceCards() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-[#02153D] mb-4">خدمات ما</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">مجموعه کاملی از خدمات برای تحقق سفر تحصیل در خود</p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto font-sans font-bold">فقط یک قدم تا پذیرش دانشگاه شما مانده است.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -84,7 +84,7 @@ export function ServiceCards() {
                 >
                   <service.icon className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-xl text-[#02153D]">{service.title}</CardTitle>
+                <CardTitle className="text-[#02153D] text-sm">{service.title}</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
                 <CardDescription className="text-gray-600 mb-6 leading-relaxed">{service.description}</CardDescription>
