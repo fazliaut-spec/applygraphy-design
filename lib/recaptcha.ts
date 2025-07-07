@@ -1,44 +1,27 @@
-// Public reCAPTCHA site key (safe to expose in client)
-export const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test key
+// Public reCAPTCHA site key (safe for client-side use)
+export const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
 
-// Server-side reCAPTCHA verification function
+// Test secret key for development (replace with real key in production)
+export const RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+
+export function getRecaptchaSiteKey(): string {
+  return RECAPTCHA_SITE_KEY
+}
+
 export async function verifyRecaptcha(token: string): Promise<boolean> {
-  if (!token) return false
-
-  // In development, always return true for testing
-  if (process.env.NODE_ENV === "development") {
-    console.log("Development mode: reCAPTCHA verification skipped")
-    return true
-  }
-
   try {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY
-    if (!secretKey) {
-      console.warn("RECAPTCHA_SECRET_KEY not configured")
-      return true // Allow in development
-    }
-
     const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: `secret=${secretKey}&response=${token}`,
+      body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`,
     })
 
     const data = await response.json()
     return data.success === true
   } catch (error) {
-    console.error("reCAPTCHA verification error:", error)
+    console.error("reCAPTCHA verification failed:", error)
     return false
-  }
-}
-
-// Helper function to get reCAPTCHA configuration
-export function getRecaptchaConfig() {
-  return {
-    siteKey: RECAPTCHA_SITE_KEY,
-    theme: "light" as const,
-    size: "normal" as const,
   }
 }

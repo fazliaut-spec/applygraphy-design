@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'placeholder.svg'],
     unoptimized: true,
   },
   eslint: {
@@ -12,15 +12,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Enable static export if needed
-  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
-  // Disable x-powered-by header
   poweredByHeader: false,
-  // Enable compression
   compress: true,
-  // Optimize fonts
   optimizeFonts: true,
-  // Configure headers for security
   async headers() {
     return [
       {
