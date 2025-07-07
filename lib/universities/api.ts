@@ -1,167 +1,100 @@
+/**
+ * Free Universities API integration
+ * Using the public Universities API: http://universities.hipolabs.com/
+ */
+
 export interface University {
-  id: string
   name: string
   country: string
-  state_province?: string
+  alpha_two_code: string
   domains: string[]
   web_pages: string[]
-  alpha_two_code: string
-  ranking?: number
-  tuition_fee_min?: number
-  tuition_fee_max?: number
-  programs: string[]
-  language_of_instruction: string[]
-  type: "public" | "private"
-  established_year?: number
-  student_count?: number
-  international_students_percentage?: number
-  acceptance_rate?: number
-  application_deadline?: string
-  requirements?: {
-    gpa_min?: number
-    language_requirements?: Record<string, number>
-    documents_required?: string[]
-  }
+  state_province?: string
 }
 
-export interface UniversitySearchFilters {
+export interface UniversitySearchParams {
   country?: string
   name?: string
-  tuition_min?: number
-  tuition_max?: number
-  type?: "public" | "private"
-  language?: string
-  field_of_study?: string
-  ranking_max?: number
+  limit?: number
 }
 
-class UniversityService {
-  private baseUrl = "http://universities.hipolabs.com"
+/**
+ * Search universities using the free Universities API
+ */
+export async function searchUniversities(params: UniversitySearchParams = {}): Promise<University[]> {
+  try {
+    const searchParams = new URLSearchParams()
 
-  async searchUniversities(filters: UniversitySearchFilters = {}): Promise<University[]> {
-    try {
-      let url = `${this.baseUrl}/search?`
-
-      if (filters.country) {
-        url += `country=${encodeURIComponent(filters.country)}&`
-      }
-      if (filters.name) {
-        url += `name=${encodeURIComponent(filters.name)}&`
-      }
-
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error("Failed to fetch universities")
-      }
-
-      const universities = await response.json()
-
-      // Enhance with mock data for demo purposes
-      return universities.map((uni: any, index: number) => ({
-        id: `${uni.name}-${uni.country}`.replace(/\s+/g, "-").toLowerCase(),
-        name: uni.name,
-        country: uni.country,
-        state_province: uni["state-province"],
-        domains: uni.domains || [],
-        web_pages: uni.web_pages || [],
-        alpha_two_code: uni.alpha_two_code,
-        ranking: Math.floor(Math.random() * 500) + 1,
-        tuition_fee_min: Math.floor(Math.random() * 20000) + 5000,
-        tuition_fee_max: Math.floor(Math.random() * 30000) + 25000,
-        programs: this.generateMockPrograms(),
-        language_of_instruction: this.getLanguagesByCountry(uni.country),
-        type: Math.random() > 0.6 ? "private" : "public",
-        established_year: Math.floor(Math.random() * 200) + 1800,
-        student_count: Math.floor(Math.random() * 50000) + 1000,
-        international_students_percentage: Math.floor(Math.random() * 40) + 5,
-        acceptance_rate: Math.floor(Math.random() * 80) + 10,
-        application_deadline: this.generateDeadline(),
-        requirements: {
-          gpa_min: Math.random() * 2 + 2.5,
-          language_requirements: {
-            IELTS: Math.random() * 2 + 6,
-            TOEFL: Math.floor(Math.random() * 40) + 80,
-          },
-          documents_required: ["Transcript", "Letter of Recommendation", "Personal Statement", "CV/Resume"],
-        },
-      }))
-    } catch (error) {
-      console.error("Error fetching universities:", error)
-      return []
+    if (params.country) {
+      searchParams.append("country", params.country)
     }
-  }
 
-  private generateMockPrograms(): string[] {
-    const programs = [
-      "Computer Science",
-      "Business Administration",
-      "Engineering",
-      "Medicine",
-      "Law",
-      "Psychology",
-      "Economics",
-      "International Relations",
-      "Environmental Science",
-      "Data Science",
-      "Artificial Intelligence",
-      "Biotechnology",
-    ]
-    const count = Math.floor(Math.random() * 8) + 3
-    return programs.sort(() => 0.5 - Math.random()).slice(0, count)
-  }
-
-  private getLanguagesByCountry(country: string): string[] {
-    const languageMap: Record<string, string[]> = {
-      "United States": ["English"],
-      "United Kingdom": ["English"],
-      Canada: ["English", "French"],
-      Germany: ["German", "English"],
-      France: ["French", "English"],
-      Italy: ["Italian", "English"],
-      Spain: ["Spanish", "English"],
-      Netherlands: ["Dutch", "English"],
-      Sweden: ["Swedish", "English"],
-      Australia: ["English"],
+    if (params.name) {
+      searchParams.append("name", params.name)
     }
-    return languageMap[country] || ["English"]
-  }
 
-  private generateDeadline(): string {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ]
-    const month = months[Math.floor(Math.random() * 12)]
-    const day = Math.floor(Math.random() * 28) + 1
-    return `${month} ${day}, 2024`
-  }
+    const url = `http://universities.hipolabs.com/search?${searchParams.toString()}`
 
-  async getUniversityById(id: string): Promise<University | null> {
-    const universities = await this.searchUniversities()
-    return universities.find((uni) => uni.id === id) || null
-  }
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+    })
 
-  async getCountries(): Promise<string[]> {
-    try {
-      const response = await fetch(`${this.baseUrl}/search`)
-      const universities = await response.json()
-      const countries = [...new Set(universities.map((uni: any) => uni.country))]
-      return countries.sort()
-    } catch (error) {
-      console.error("Error fetching countries:", error)
-      return []
+    if (!response.ok) {
+      throw new Error(`Universities API error: ${response.status}`)
     }
+
+    const universities: University[] = await response.json()
+
+    // Apply limit if specified
+    if (params.limit && params.limit > 0) {
+      return universities.slice(0, params.limit)
+    }
+
+    return universities
+  } catch (error) {
+    console.error("Error fetching universities:", error)
+    return []
   }
 }
 
-export const universityService = new UniversityService()
+/**
+ * Get universities by country
+ */
+export async function getUniversitiesByCountry(country: string, limit = 50): Promise<University[]> {
+  return searchUniversities({ country, limit })
+}
+
+/**
+ * Search universities by name
+ */
+export async function searchUniversitiesByName(name: string, limit = 20): Promise<University[]> {
+  return searchUniversities({ name, limit })
+}
+
+/**
+ * Get popular countries with universities
+ */
+export function getPopularCountries(): string[] {
+  return [
+    "United States",
+    "United Kingdom",
+    "Canada",
+    "Australia",
+    "Germany",
+    "France",
+    "Netherlands",
+    "Sweden",
+    "Norway",
+    "Denmark",
+    "Switzerland",
+    "Austria",
+    "Italy",
+    "Spain",
+    "Japan",
+    "South Korea",
+    "Singapore",
+    "New Zealand",
+  ]
+}

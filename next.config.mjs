@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true,
-  skipTrailingSlashRedirect: true,
-  distDir: 'out',
+  reactStrictMode: true,
+  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -11,24 +9,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
-    domains: ['images.unsplash.com', 'via.placeholder.com']
+    domains: ['placeholder.svg'],
+    unoptimized: true
   },
   experimental: {
-    esmExternals: 'loose'
+    appDir: true
   },
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      net: false,
-      tls: false
-    }
-    return config
-  },
-  env: {
-    CUSTOM_KEY: 'applygraphy-platform'
-  }
+  // Enable static export if needed
+  // output: 'export',
+  // trailingSlash: true,
+  // distDir: 'dist'
 }
 
 export default nextConfig

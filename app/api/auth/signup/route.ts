@@ -3,17 +3,17 @@ import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, recaptchaToken } = await request.json()
+    const { email, password, captchaToken } = await request.json()
 
     // Verify reCAPTCHA
-    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken)
+    const isRecaptchaValid = await verifyRecaptcha(captchaToken)
     if (!isRecaptchaValid) {
       return NextResponse.json({ error: "reCAPTCHA verification failed" }, { status: 400 })
     }
 
     // Validate input
-    if (!name || !email || !password) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 })
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
     if (password.length < 8) {
@@ -26,20 +26,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
     }
 
-    // TODO: Integrate with Supabase or your preferred auth provider
-    // For now, we'll simulate a successful signup
-    console.log("User signup attempt:", { name, email })
-
-    // Simulate email verification process
-    // In a real app, you would:
-    // 1. Hash the password
-    // 2. Store user in database
-    // 3. Send verification email
-    // 4. Return success response
+    // For demo purposes, just log and return success
+    console.log("User signup:", { email })
 
     return NextResponse.json({
-      message: "Account created successfully! Please check your email for verification.",
-      user: { name, email },
+      success: true,
+      message: "Account created successfully!",
+      user: { email },
     })
   } catch (error) {
     console.error("Signup error:", error)

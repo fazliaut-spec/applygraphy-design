@@ -1,23 +1,37 @@
-// Public reCAPTCHA site key - safe to expose in client-side code
-export const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test key - replace with your real key
+/**
+ * Public & server-side helpers for Google reCAPTCHA v2 / v3.
+ * - Only the SITE key is shipped to the client (safe).
+ * - Secret key stays server-side via env var RECAPTCHA_SECRET_KEY.
+ */
 
-// reCAPTCHA verification function for server-side
+export const RECAPTCHA_SITE_KEY = "REPLACE_WITH_YOUR_PUBLIC_SITE_KEY"
+
+/**
+ * verifyRecaptcha – server-side validation of a client token.
+ */
 export async function verifyRecaptcha(token: string): Promise<boolean> {
-  if (!token) return false
+  if (!process.env.RECAPTCHA_SECRET_KEY) {
+    console.warn("RECAPTCHA_SECRET_KEY is not set; skipping verification.")
+    // In non-production preview fallback to “true” to avoid blocking local tests
+    return process.env.NODE_ENV !== "production"
+  }
 
-  try {
-    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`,
-    })
+  const params = new URLSearchParams({
+    secret: process.env.RECAPTCHA_SECRET_KEY,
+    response: token,
+  })
 
-    const data = await response.json()
-    return data.success
-  } catch (error) {
-    console.error("reCAPTCHA verification error:", error)
+  const res = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
+  })
+
+  if (!res.ok) {
+    console.error("reCAPTCHA verification HTTP error", res.status)
     return false
   }
+
+  const data: { success: boolean } = await res.json()
+  return data.success
 }

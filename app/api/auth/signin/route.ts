@@ -3,10 +3,10 @@ import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, recaptchaToken } = await request.json()
+    const { email, password, captchaToken } = await request.json()
 
     // Verify reCAPTCHA
-    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken)
+    const isRecaptchaValid = await verifyRecaptcha(captchaToken)
     if (!isRecaptchaValid) {
       return NextResponse.json({ error: "reCAPTCHA verification failed" }, { status: 400 })
     }
@@ -22,18 +22,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
     }
 
-    // TODO: Implement actual user authentication with Supabase
-    // For now, just simulate success
-    console.log("User signin attempt:", { email })
-
-    // Simulate authentication process
-    // In a real app, you would:
-    // 1. Verify credentials against database
-    // 2. Create session/JWT token
-    // 3. Set secure cookies
-    // 4. Return user data
+    // For demo purposes, just log and return success
+    console.log("User signin:", { email })
 
     return NextResponse.json({
+      success: true,
       message: "Signed in successfully!",
       user: { email },
     })
