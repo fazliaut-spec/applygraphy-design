@@ -123,7 +123,7 @@ export function ContactForm() {
                       <SelectItem value="visa">خدمات ویزا</SelectItem>
                       <SelectItem value="language">دوره‌های زبان</SelectItem>
                       <SelectItem value="exam">آزمون‌های بین‌المللی</SelectItem>
-                      <SelectItem value="consulting">مشاوره مقصد</SelectItem>
+                      <SelectItem value="consulting">مشا��ره مقصد</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -1,41 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
   images: {
-    domains: ['localhost', 'placeholder.svg'],
-    unoptimized: true,
+    domains: ['placeholder.svg', 'images.unsplash.com', 'via.placeholder.com'],
+    unoptimized: true
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react']
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   typescript: {
-    ignoreBuildErrors: true,
-  },
-  poweredByHeader: false,
-  compress: true,
-  optimizeFonts: true,
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
-      },
-    ]
-  },
+    ignoreBuildErrors: true
+  }
 }
 
 export default nextConfig

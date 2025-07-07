@@ -100,7 +100,7 @@ export default function ProfilePage() {
   ]
 
   const suggestedUniversities = [
-    { name: "دانشگاه تورنتو", country: "کانادا", match: "95%", program: "مهندسی کامپیوتر" },
+    { name: "دانشگاه تورن��و", country: "کانادا", match: "95%", program: "مهندسی کامپیوتر" },
     { name: "دانشگاه آکسفورد", country: "انگلستان", match: "88%", program: "علوم کامپیوتر" },
     { name: "دانشگاه میونیخ", country: "آلمان", match: "82%", program: "مهندسی نرم‌افزار" },
   ]

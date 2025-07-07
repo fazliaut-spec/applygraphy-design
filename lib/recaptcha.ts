@@ -1,9 +1,11 @@
 // Public reCAPTCHA site key (safe for client-side use)
-export const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+export const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Google's test key
 
 // Test secret key for development (replace with real key in production)
 export const RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
+// This is a test key provided by Google for development
+// Replace with your actual site key in production
 export function getRecaptchaSiteKey(): string {
   return RECAPTCHA_SITE_KEY
 }

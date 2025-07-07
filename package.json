@@ -2,7 +2,7 @@
   "name": "applygraphy-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Applygraphy – Smart Immigration Platform",
+  "description": "Applygraphy Smart Immigration Platform",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
