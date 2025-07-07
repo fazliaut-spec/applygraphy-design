@@ -1,15 +1,14 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
-
 import { RECAPTCHA_SITE_KEY } from "@/lib/recaptcha"
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Mail } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 interface AuthModalProps {
@@ -27,7 +26,7 @@ export default function AuthModal({ open = false, onOpenChange = () => {} }: Aut
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
     if (!captchaToken) {
@@ -43,9 +42,7 @@ export default function AuthModal({ open = false, onOpenChange = () => {} }: Aut
     setError(null)
 
     try {
-      // Choose the correct API endpoint
       const endpoint = isLogin ? "/api/auth/signin" : "/api/auth/signup"
-
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -60,7 +57,6 @@ export default function AuthModal({ open = false, onOpenChange = () => {} }: Aut
         description: isLogin ? "با موفقیت وارد شدید." : "حساب کاربری شما ایجاد شد.",
       })
 
-      // Reset form
       setEmail("")
       setPassword("")
       setCaptchaToken(null)
@@ -108,7 +104,7 @@ export default function AuthModal({ open = false, onOpenChange = () => {} }: Aut
           </div>
 
           <div className="flex justify-center">
-            <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={(token) => setCaptchaToken(token)} hl="fa" />
+            <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={(tok) => setCaptchaToken(tok)} hl="fa" />
           </div>
 
           <Button type="submit" disabled={submitting || !captchaToken} className="w-full">
