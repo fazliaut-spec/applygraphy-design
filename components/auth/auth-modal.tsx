@@ -18,9 +18,6 @@ export interface AuthModalProps {
   onSuccess: () => void
 }
 
-/**
- * Named export expected elsewhere in the app.
- */
 export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -41,14 +38,32 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     setIsLoading(true)
     try {
-      // Simulate API call
-      await new Promise((r) => setTimeout(r, 1500))
-      toast({
-        title: "ورود موفق",
-        description: "خوش آمدید!",
+      const formData = new FormData(e.currentTarget)
+      const email = formData.get("email") as string
+      const password = formData.get("password") as string
+
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, captchaToken: recaptchaToken }),
       })
-      onSuccess()
-    } catch {
+
+      const result = await response.json()
+
+      if (result.success) {
+        toast({
+          title: "ورود موفق",
+          description: "خوش آمدید!",
+        })
+        onSuccess()
+      } else {
+        toast({
+          title: "خطا در ورود",
+          description: result.error || "لطفاً دوباره تلاش کنید",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
       toast({
         title: "خطا در ورود",
         description: "لطفاً دوباره تلاش کنید",
@@ -73,13 +88,32 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     setIsLoading(true)
     try {
-      await new Promise((r) => setTimeout(r, 1500))
-      toast({
-        title: "ثبت نام موفق",
-        description: "حساب کاربری شما ایجاد شد",
+      const formData = new FormData(e.currentTarget)
+      const email = formData.get("registerEmail") as string
+      const password = formData.get("registerPassword") as string
+
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, captchaToken: recaptchaToken }),
       })
-      onSuccess()
-    } catch {
+
+      const result = await response.json()
+
+      if (result.success) {
+        toast({
+          title: "ثبت نام موفق",
+          description: "حساب کاربری شما ایجاد شد",
+        })
+        onSuccess()
+      } else {
+        toast({
+          title: "خطا در ثبت نام",
+          description: result.error || "لطفاً دوباره تلاش کنید",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
       toast({
         title: "خطا در ثبت نام",
         description: "لطفاً دوباره تلاش کنید",
@@ -103,25 +137,30 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             <TabsTrigger value="register">ثبت نام</TabsTrigger>
           </TabsList>
 
-          {/* ------------------ LOGIN ------------------ */}
           <TabsContent value="login">
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* email */}
               <div className="space-y-2">
                 <Label htmlFor="email">ایمیل</Label>
                 <div className="relative">
                   <Mail className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input id="email" type="email" placeholder="example@email.com" className="pr-10" required />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="example@email.com"
+                    className="pr-10"
+                    required
+                  />
                 </div>
               </div>
 
-              {/* password */}
               <div className="space-y-2">
                 <Label htmlFor="password">رمز عبور</Label>
                 <div className="relative">
                   <Lock className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="رمز عبور خود را وارد کنید"
                     className="pr-10 pl-10"
@@ -132,7 +171,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     variant="ghost"
                     size="sm"
                     className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword((prev) => !prev)}
+                    onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-gray-400" />
@@ -143,12 +182,10 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 </div>
               </div>
 
-              {/* reCAPTCHA */}
               <div className="flex justify-center">
                 <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setRecaptchaToken} hl="fa" />
               </div>
 
-              {/* submit */}
               <Button
                 type="submit"
                 className="w-full bg-[#FF6A5C] hover:bg-[#FF6A5C]/90"
@@ -159,7 +196,6 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             </form>
           </TabsContent>
 
-          {/* ---------------- REGISTER ---------------- */}
           <TabsContent value="register">
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -167,13 +203,13 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                   <Label htmlFor="firstName">نام</Label>
                   <div className="relative">
                     <User className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="firstName" placeholder="نام" className="pr-10 text-right" required />
+                    <Input id="firstName" name="firstName" placeholder="نام" className="pr-10 text-right" required />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="lastName">نام خانوادگی</Label>
-                  <Input id="lastName" placeholder="نام خانوادگی" className="text-right" required />
+                  <Input id="lastName" name="lastName" placeholder="نام خانوادگی" className="text-right" required />
                 </div>
               </div>
 
@@ -181,7 +217,14 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 <Label htmlFor="registerEmail">ایمیل</Label>
                 <div className="relative">
                   <Mail className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input id="registerEmail" type="email" placeholder="example@email.com" className="pr-10" required />
+                  <Input
+                    id="registerEmail"
+                    name="registerEmail"
+                    type="email"
+                    placeholder="example@email.com"
+                    className="pr-10"
+                    required
+                  />
                 </div>
               </div>
 
@@ -189,7 +232,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 <Label htmlFor="phone">شماره تماس</Label>
                 <div className="relative">
                   <Phone className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input id="phone" type="tel" placeholder="09123456789" className="pr-10" required />
+                  <Input id="phone" name="phone" type="tel" placeholder="09123456789" className="pr-10" required />
                 </div>
               </div>
 
@@ -199,6 +242,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                   <Lock className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="registerPassword"
+                    name="registerPassword"
                     type={showPassword ? "text" : "password"}
                     placeholder="رمز عبور خود را وارد کنید"
                     className="pr-10 pl-10"
@@ -209,7 +253,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     variant="ghost"
                     size="sm"
                     className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword((prev) => !prev)}
+                    onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-gray-400" />
@@ -226,8 +270,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
               <Button
                 type="submit"
-                disabled={isLoading || !recaptchaToken}
                 className="w-full bg-[#FF6A5C] hover:bg-[#FF6A5C]/90"
+                disabled={isLoading || !recaptchaToken}
               >
                 {isLoading ? "در حال ثبت نام..." : "ثبت نام"}
               </Button>
