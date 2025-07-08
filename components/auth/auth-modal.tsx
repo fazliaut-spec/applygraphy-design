@@ -12,12 +12,15 @@ import ReCAPTCHA from "react-google-recaptcha"
 import { RECAPTCHA_SITE_KEY } from "@/lib/recaptcha"
 import { useToast } from "@/hooks/use-toast"
 
-interface AuthModalProps {
+export interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
 }
 
+/**
+ * Named export expected elsewhere in the app.
+ */
 export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -37,17 +40,15 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     }
 
     setIsLoading(true)
-
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
+      // Simulate API call
+      await new Promise((r) => setTimeout(r, 1500))
       toast({
         title: "ورود موفق",
         description: "خوش آمدید!",
       })
-
       onSuccess()
-    } catch (error) {
+    } catch {
       toast({
         title: "خطا در ورود",
         description: "لطفاً دوباره تلاش کنید",
@@ -71,17 +72,14 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     }
 
     setIsLoading(true)
-
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
+      await new Promise((r) => setTimeout(r, 1500))
       toast({
         title: "ثبت نام موفق",
         description: "حساب کاربری شما ایجاد شد",
       })
-
       onSuccess()
-    } catch (error) {
+    } catch {
       toast({
         title: "خطا در ثبت نام",
         description: "لطفاً دوباره تلاش کنید",
@@ -105,8 +103,10 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             <TabsTrigger value="register">ثبت نام</TabsTrigger>
           </TabsList>
 
+          {/* ------------------ LOGIN ------------------ */}
           <TabsContent value="login">
             <form onSubmit={handleLogin} className="space-y-4">
+              {/* email */}
               <div className="space-y-2">
                 <Label htmlFor="email">ایمیل</Label>
                 <div className="relative">
@@ -115,6 +115,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 </div>
               </div>
 
+              {/* password */}
               <div className="space-y-2">
                 <Label htmlFor="password">رمز عبور</Label>
                 <div className="relative">
@@ -131,7 +132,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     variant="ghost"
                     size="sm"
                     className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword((prev) => !prev)}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-gray-400" />
@@ -142,10 +143,12 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 </div>
               </div>
 
+              {/* reCAPTCHA */}
               <div className="flex justify-center">
                 <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setRecaptchaToken} hl="fa" />
               </div>
 
+              {/* submit */}
               <Button
                 type="submit"
                 className="w-full bg-[#FF6A5C] hover:bg-[#FF6A5C]/90"
@@ -156,6 +159,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             </form>
           </TabsContent>
 
+          {/* ---------------- REGISTER ---------------- */}
           <TabsContent value="register">
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -205,7 +209,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     variant="ghost"
                     size="sm"
                     className="absolute left-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword((prev) => !prev)}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-gray-400" />
@@ -222,8 +226,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
               <Button
                 type="submit"
-                className="w-full bg-[#FF6A5C] hover:bg-[#FF6A5C]/90"
                 disabled={isLoading || !recaptchaToken}
+                className="w-full bg-[#FF6A5C] hover:bg-[#FF6A5C]/90"
               >
                 {isLoading ? "در حال ثبت نام..." : "ثبت نام"}
               </Button>
