@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -10,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react"
 import ReCAPTCHA from "react-google-recaptcha"
-import { getRecaptchaSiteKey } from "@/lib/recaptcha"
+import { RECAPTCHA_SITE_KEY } from "@/lib/recaptcha"
 import { useToast } from "@/hooks/use-toast"
 
 interface AuthModalProps {
@@ -40,7 +39,6 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     setIsLoading(true)
 
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
       toast({
@@ -75,7 +73,6 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     setIsLoading(true)
 
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
       toast({
@@ -146,7 +143,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               </div>
 
               <div className="flex justify-center">
-                <ReCAPTCHA sitekey={getRecaptchaSiteKey()} onChange={setRecaptchaToken} hl="fa" />
+                <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setRecaptchaToken} hl="fa" />
               </div>
 
               <Button
@@ -220,7 +217,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               </div>
 
               <div className="flex justify-center">
-                <ReCAPTCHA sitekey={getRecaptchaSiteKey()} onChange={setRecaptchaToken} hl="fa" />
+                <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setRecaptchaToken} hl="fa" />
               </div>
 
               <Button

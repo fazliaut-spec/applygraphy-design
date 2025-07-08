@@ -1,13 +1,5 @@
 import Link from "next/link"
-import {
-  GraduationCap,
-  Phone,
-  Mail,
-  MapPin,
-  Instagram,
-  TextIcon as Telegram,
-  PhoneIcon as WhatsApp,
-} from "lucide-react"
+import { GraduationCap, Phone, Mail, MapPin, Instagram, MessageCircle, Send } from "lucide-react"
 
 const footerLinks = {
   services: [
@@ -35,8 +27,8 @@ const footerLinks = {
 
 const socialLinks = [
   { name: "اینستاگرام", icon: Instagram, href: "https://instagram.com/applygraphy" },
-  { name: "تلگرام", icon: Telegram, href: "https://t.me/applygraphy" },
-  { name: "واتساپ", icon: WhatsApp, href: "https://wa.me/989123456789" },
+  { name: "تلگرام", icon: Send, href: "https://t.me/applygraphy" },
+  { name: "واتساپ", icon: MessageCircle, href: "https://wa.me/989330578976" },
 ]
 
 export function Footer() {
@@ -44,7 +36,6 @@ export function Footer() {
     <footer className="bg-[#02153D] text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-3 mb-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#FF6A5C] to-[#FF6A5C]/80">
@@ -70,7 +61,6 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Services */}
           <div>
             <h3 className="font-bold text-lg mb-6">خدمات</h3>
             <ul className="space-y-3">
@@ -84,7 +74,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
           <div>
             <h3 className="font-bold text-lg mb-6">پشتیبانی</h3>
             <ul className="space-y-3">
@@ -98,7 +87,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h3 className="font-bold text-lg mb-6">تماس با ما</h3>
             <div className="space-y-4">
@@ -108,7 +96,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-[#FF6A5C]" />
-                <span className="font-bold text-[#02153D] font-sans text-base text-white">applygraphy@gmail.com</span>
+                <span className="text-white/80">applygraphy@gmail.com</span>
               </div>
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-[#FF6A5C] mt-1" />

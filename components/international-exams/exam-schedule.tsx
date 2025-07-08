@@ -266,7 +266,7 @@ export function ExamSchedule() {
         <div className="mt-16">
           <Card className="bg-gradient-to-r from-[#02153D]/5 to-[#FF6A5C]/5 border-[#FF6A5C]">
             <CardContent className="p-6">
-              <h3 className="text-xl font-bold text-[#02153D] mb-4">نکات مهم:</h3>
+              <h3 className="text-xl font-bold text-[#02153D] mb-4">نکات ��هم:</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">

@@ -1,67 +1,38 @@
 "use client"
 
-import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
-import { detectUserLanguage } from "@/lib/i18n/geolocation"
-import { defaultLocale, type Locale } from "@/lib/i18n/config"
-import { translations, type TranslationKey } from "@/lib/i18n/translations"
+import { createContext, useContext, useState, type ReactNode } from "react"
 
 interface LanguageContextType {
-  locale: Locale
-  setLocale: (locale: Locale) => void
-  t: (key: TranslationKey) => string
-  isRTL: boolean
+  language: "fa" | "en"
+  setLanguage: (lang: "fa" | "en") => void
+  t: (key: string) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(defaultLocale)
-  const [isLoading, setIsLoading] = useState(true)
+const translations = {
+  fa: {
+    home: "خانه",
+    about: "درباره ما",
+    services: "خدمات",
+    contact: "تماس با ما",
+  },
+  en: {
+    home: "Home",
+    about: "About Us",
+    services: "Services",
+    contact: "Contact Us",
+  },
+}
 
-  useEffect(() => {
-    const initializeLanguage = async () => {
-      // Check if user has a saved preference
-      const savedLocale = localStorage.getItem("preferred-language") as Locale
-      if (savedLocale && Object.keys(translations).includes(savedLocale)) {
-        setLocaleState(savedLocale)
-      } else {
-        // Detect language based on IP/browser
-        const detectedLocale = await detectUserLanguage()
-        setLocaleState(detectedLocale)
-      }
-      setIsLoading(false)
-    }
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguage] = useState<"fa" | "en">("fa")
 
-    initializeLanguage()
-  }, [])
-
-  const setLocale = (newLocale: Locale) => {
-    setLocaleState(newLocale)
-    localStorage.setItem("preferred-language", newLocale)
-
-    // Update document direction for RTL languages
-    document.documentElement.dir = ["fa", "ar"].includes(newLocale) ? "rtl" : "ltr"
-    document.documentElement.lang = newLocale
+  const t = (key: string): string => {
+    return translations[language][key as keyof typeof translations.fa] || key
   }
 
-  const t = (key: TranslationKey): string => {
-    return translations[locale]?.[key] || translations[defaultLocale][key] || key
-  }
-
-  const isRTL = ["fa", "ar"].includes(locale)
-
-  // Update document direction when locale changes
-  useEffect(() => {
-    document.documentElement.dir = isRTL ? "rtl" : "ltr"
-    document.documentElement.lang = locale
-  }, [locale, isRTL])
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
-  return <LanguageContext.Provider value={{ locale, setLocale, t, isRTL }}>{children}</LanguageContext.Provider>
+  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
 }
 
 export function useLanguage() {

@@ -1,63 +1,66 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut, LogIn, UserPlus } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { User, Settings, LogOut, LogIn } from "lucide-react"
+import { AuthModal } from "@/components/auth/auth-modal"
 
 export function UserMenu() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // This would come from your auth context
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const handleAuthSuccess = () => {
+    setIsLoggedIn(true)
+    setIsAuthModalOpen(false)
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+  }
 
   if (!isLoggedIn) {
     return (
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/auth?mode=signin">
-            <LogIn className="h-4 w-4 mr-2" />
-            ورود
-          </Link>
+      <>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsAuthModalOpen(true)}
+          className="text-gray-700 hover:text-[#FF6A5C]"
+        >
+          <LogIn className="h-4 w-4 mr-2" />
+          ورود
         </Button>
-        <Button size="sm" asChild className="bg-[#02153D] hover:bg-[#02153D]/90">
-          <Link href="/auth?mode=signup">
-            <UserPlus className="h-4 w-4 mr-2" />
-            ثبت نام
-          </Link>
-        </Button>
-      </div>
+        <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onSuccess={handleAuthSuccess} />
+      </>
     )
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <User className="h-5 w-5" />
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="/placeholder.svg" alt="User" />
+            <AvatarFallback>
+              <User className="h-4 w-4" />
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem asChild>
-          <Link href="/profile" className="cursor-pointer">
-            <User className="h-4 w-4 mr-2" />
-            پروفایل من
-          </Link>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuItem>
+          <User className="mr-2 h-4 w-4" />
+          <span>پروفایل</span>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard" className="cursor-pointer">
-            <Settings className="h-4 w-4 mr-2" />
-            داشبورد
-          </Link>
+        <DropdownMenuItem>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>تنظیمات</span>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setIsLoggedIn(false)} className="cursor-pointer text-red-600">
-          <LogOut className="h-4 w-4 mr-2" />
-          خروج
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>خروج</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
