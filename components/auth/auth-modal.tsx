@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,7 +22,15 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
   const { toast } = useToast()
+
+  const resetRecaptcha = () => {
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset()
+    }
+    setRecaptchaToken(null)
+  }
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -42,6 +50,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       const email = formData.get("email") as string
       const password = formData.get("password") as string
 
+      console.log("Attempting login with:", { email, hasRecaptcha: !!recaptchaToken })
+
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,6 +59,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       })
 
       const result = await response.json()
+      console.log("Login response:", result)
 
       if (result.success) {
         toast({
@@ -56,19 +67,23 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           description: "خوش آمدید!",
         })
         onSuccess()
+        onClose()
       } else {
         toast({
           title: "خطا در ورود",
           description: result.error || "لطفاً دوباره تلاش کنید",
           variant: "destructive",
         })
+        resetRecaptcha()
       }
     } catch (error) {
+      console.error("Login error:", error)
       toast({
         title: "خطا در ورود",
         description: "لطفاً دوباره تلاش کنید",
         variant: "destructive",
       })
+      resetRecaptcha()
     } finally {
       setIsLoading(false)
     }
@@ -91,14 +106,33 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       const formData = new FormData(e.currentTarget)
       const email = formData.get("registerEmail") as string
       const password = formData.get("registerPassword") as string
+      const firstName = formData.get("firstName") as string
+      const lastName = formData.get("lastName") as string
+      const phone = formData.get("phone") as string
+
+      console.log("Attempting registration with:", {
+        email,
+        firstName,
+        lastName,
+        phone,
+        hasRecaptcha: !!recaptchaToken,
+      })
 
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, captchaToken: recaptchaToken }),
+        body: JSON.stringify({
+          email,
+          password,
+          firstName,
+          lastName,
+          phone,
+          captchaToken: recaptchaToken,
+        }),
       })
 
       const result = await response.json()
+      console.log("Registration response:", result)
 
       if (result.success) {
         toast({
@@ -106,27 +140,36 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           description: "حساب کاربری شما ایجاد شد",
         })
         onSuccess()
+        onClose()
       } else {
         toast({
           title: "خطا در ثبت نام",
           description: result.error || "لطفاً دوباره تلاش کنید",
           variant: "destructive",
         })
+        resetRecaptcha()
       }
     } catch (error) {
+      console.error("Registration error:", error)
       toast({
         title: "خطا در ثبت نام",
         description: "لطفاً دوباره تلاش کنید",
         variant: "destructive",
       })
+      resetRecaptcha()
     } finally {
       setIsLoading(false)
     }
   }
 
+  const handleRecaptchaChange = (token: string | null) => {
+    console.log("reCAPTCHA token received:", token ? "✓" : "✗")
+    setRecaptchaToken(token)
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" dir="rtl">
         <DialogHeader>
           <DialogTitle className="text-center text-[#02153D]">ورود به اپلای‌گرافی</DialogTitle>
         </DialogHeader>
@@ -149,6 +192,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     type="email"
                     placeholder="example@email.com"
                     className="pr-10"
+                    defaultValue="test@example.com"
                     required
                   />
                 </div>
@@ -164,6 +208,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     type={showPassword ? "text" : "password"}
                     placeholder="رمز عبور خود را وارد کنید"
                     className="pr-10 pl-10"
+                    defaultValue="password123"
                     required
                   />
                   <Button
@@ -183,7 +228,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               </div>
 
               <div className="flex justify-center">
-                <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setRecaptchaToken} hl="fa" />
+                <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={handleRecaptchaChange} hl="fa" />
               </div>
 
               <Button
@@ -193,6 +238,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               >
                 {isLoading ? "در حال ورود..." : "ورود"}
               </Button>
+
+              <div className="text-xs text-gray-500 text-center">برای تست: ایمیل و رمز عبور از پیش پر شده است</div>
             </form>
           </TabsContent>
 
@@ -203,13 +250,27 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                   <Label htmlFor="firstName">نام</Label>
                   <div className="relative">
                     <User className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="firstName" name="firstName" placeholder="نام" className="pr-10 text-right" required />
+                    <Input
+                      id="firstName"
+                      name="firstName"
+                      placeholder="نام"
+                      className="pr-10 text-right"
+                      defaultValue="علی"
+                      required
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="lastName">نام خانوادگی</Label>
-                  <Input id="lastName" name="lastName" placeholder="نام خانوادگی" className="text-right" required />
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    placeholder="نام خانوادگی"
+                    className="text-right"
+                    defaultValue="احمدی"
+                    required
+                  />
                 </div>
               </div>
 
@@ -223,6 +284,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     type="email"
                     placeholder="example@email.com"
                     className="pr-10"
+                    defaultValue="newuser@example.com"
                     required
                   />
                 </div>
@@ -232,7 +294,15 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                 <Label htmlFor="phone">شماره تماس</Label>
                 <div className="relative">
                   <Phone className="absolute right-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input id="phone" name="phone" type="tel" placeholder="09123456789" className="pr-10" required />
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="09123456789"
+                    className="pr-10"
+                    defaultValue="09123456789"
+                    required
+                  />
                 </div>
               </div>
 
@@ -246,6 +316,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                     type={showPassword ? "text" : "password"}
                     placeholder="رمز عبور خود را وارد کنید"
                     className="pr-10 pl-10"
+                    defaultValue="newpassword123"
                     required
                   />
                   <Button
@@ -265,7 +336,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               </div>
 
               <div className="flex justify-center">
-                <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setRecaptchaToken} hl="fa" />
+                <ReCAPTCHA ref={recaptchaRef} sitekey={RECAPTCHA_SITE_KEY} onChange={handleRecaptchaChange} hl="fa" />
               </div>
 
               <Button
@@ -275,6 +346,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
               >
                 {isLoading ? "در حال ثبت نام..." : "ثبت نام"}
               </Button>
+
+              <div className="text-xs text-gray-500 text-center">برای تست: تمام فیلدها از پیش پر شده است</div>
             </form>
           </TabsContent>
         </Tabs>

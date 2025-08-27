@@ -8,7 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MessageSquare, Users, Calendar, BarChart3, Send, Eye, CheckCircle, Clock, AlertCircle } from "lucide-react"
+import { Send, Eye, CheckCircle, Clock, AlertCircle } from "lucide-react"
+import { AdminOverview } from "@/components/admin/overview"
+import { RecentUsers } from "@/components/admin/recent-users"
+import { RecentApplications } from "@/components/admin/recent-applications"
+import { RecentOrders } from "@/components/admin/recent-orders"
+import { AdminStats } from "@/components/admin/stats"
 
 interface ChatInquiry {
   id: string
@@ -31,7 +36,7 @@ interface Consultation {
   notes?: string
 }
 
-export default function AdminPanel() {
+export default function AdminDashboardPage() {
   const [selectedInquiry, setSelectedInquiry] = useState<ChatInquiry | null>(null)
   const [response, setResponse] = useState("")
 
@@ -130,191 +135,147 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#02153D]">پنل مدیریت مشاوران</h1>
-          <p className="text-gray-600 mt-2">مدیریت درخواست‌ها و مشاوره‌های مشتریان</p>
-        </div>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold tracking-tight">پنل مدیریت</h1>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">درخواست‌های جدید</p>
-                  <p className="text-3xl font-bold text-[#FF6A5C]">12</p>
-                </div>
-                <MessageSquare className="h-8 w-8 text-[#FF6A5C]" />
-              </div>
-            </CardContent>
-          </Card>
+      <AdminStats />
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">مشاوره‌های امروز</p>
-                  <p className="text-3xl font-bold text-[#02153D]">5</p>
-                </div>
-                <Calendar className="h-8 w-8 text-[#02153D]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">کاربران فعال</p>
-                  <p className="text-3xl font-bold text-green-600">248</p>
-                </div>
-                <Users className="h-8 w-8 text-green-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">نرخ رضایت</p>
-                  <p className="text-3xl font-bold text-blue-600">94%</p>
-                </div>
-                <BarChart3 className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
-        <Tabs defaultValue="inquiries" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="inquiries">درخواست‌های چت</TabsTrigger>
-            <TabsTrigger value="consultations">مشاوره‌ها</TabsTrigger>
-          </TabsList>
-
-          {/* Chat Inquiries Tab */}
-          <TabsContent value="inquiries">
-            <Card>
-              <CardHeader>
-                <CardTitle>درخواست‌های چت</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-right">اولویت</TableHead>
-                      <TableHead className="text-right">کاربر</TableHead>
-                      <TableHead className="text-right">پیام</TableHead>
-                      <TableHead className="text-right">زمان</TableHead>
-                      <TableHead className="text-right">وضعیت</TableHead>
-                      <TableHead className="text-right">عملیات</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {mockInquiries.map((inquiry) => (
-                      <TableRow key={inquiry.id}>
-                        <TableCell>{getPriorityIcon(inquiry.priority)}</TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{inquiry.userName}</p>
-                            <p className="text-sm text-gray-600">{inquiry.userEmail}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="max-w-xs">
-                          <p className="truncate">{inquiry.message}</p>
-                        </TableCell>
-                        <TableCell>{inquiry.timestamp.toLocaleString("fa-IR")}</TableCell>
-                        <TableCell>{getStatusBadge(inquiry.status)}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button size="sm" variant="outline" onClick={() => setSelectedInquiry(inquiry)}>
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
-                                <DialogHeader>
-                                  <DialogTitle>پاسخ به درخواست</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <h4 className="font-medium mb-2">پیام کاربر:</h4>
-                                    <p className="bg-gray-100 p-3 rounded-lg">{inquiry.message}</p>
-                                  </div>
-                                  <div>
-                                    <h4 className="font-medium mb-2">پاسخ شما:</h4>
-                                    <Textarea
-                                      value={response}
-                                      onChange={(e) => setResponse(e.target.value)}
-                                      placeholder="پاسخ خود را اینجا بنویسید..."
-                                      className="min-h-[120px] text-right"
-                                    />
-                                  </div>
-                                  <div className="flex justify-end gap-2">
-                                    <Button variant="outline">لغو</Button>
-                                    <Button onClick={handleSendResponse} className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90">
-                                      <Send className="h-4 w-4 mr-2" />
-                                      ارسال پاسخ
-                                    </Button>
-                                  </div>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Consultations Tab */}
-          <TabsContent value="consultations">
-            <Card>
-              <CardHeader>
-                <CardTitle>مشاوره‌های برنامه‌ریزی شده</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-right">کاربر</TableHead>
-                      <TableHead className="text-right">خدمت</TableHead>
-                      <TableHead className="text-right">تاریخ</TableHead>
-                      <TableHead className="text-right">ساعت</TableHead>
-                      <TableHead className="text-right">وضعیت</TableHead>
-                      <TableHead className="text-right">یادداشت</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {mockConsultations.map((consultation) => (
-                      <TableRow key={consultation.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{consultation.userName}</p>
-                            <p className="text-sm text-gray-600">{consultation.userEmail}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>{consultation.service}</TableCell>
-                        <TableCell>{consultation.date.toLocaleDateString("fa-IR")}</TableCell>
-                        <TableCell>{consultation.time}</TableCell>
-                        <TableCell>{getStatusBadge(consultation.status)}</TableCell>
-                        <TableCell>{consultation.notes || "-"}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+      <div className="grid gap-6 md:grid-cols-2">
+        <AdminOverview />
+        <RecentUsers />
       </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <RecentApplications />
+        <RecentOrders />
+      </div>
+
+      {/* Main Content */}
+      <Tabs defaultValue="inquiries" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="inquiries">درخواست‌های چت</TabsTrigger>
+          <TabsTrigger value="consultations">مشاوره‌ها</TabsTrigger>
+        </TabsList>
+
+        {/* Chat Inquiries Tab */}
+        <TabsContent value="inquiries">
+          <Card>
+            <CardHeader>
+              <CardTitle>درخواست‌های چت</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-right">اولویت</TableHead>
+                    <TableHead className="text-right">کاربر</TableHead>
+                    <TableHead className="text-right">پیام</TableHead>
+                    <TableHead className="text-right">زمان</TableHead>
+                    <TableHead className="text-right">وضعیت</TableHead>
+                    <TableHead className="text-right">عملیات</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {mockInquiries.map((inquiry) => (
+                    <TableRow key={inquiry.id}>
+                      <TableCell>{getPriorityIcon(inquiry.priority)}</TableCell>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{inquiry.userName}</p>
+                          <p className="text-sm text-gray-600">{inquiry.userEmail}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="max-w-xs">
+                        <p className="truncate">{inquiry.message}</p>
+                      </TableCell>
+                      <TableCell>{inquiry.timestamp.toLocaleString("fa-IR")}</TableCell>
+                      <TableCell>{getStatusBadge(inquiry.status)}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm" variant="outline" onClick={() => setSelectedInquiry(inquiry)}>
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-2xl">
+                              <DialogHeader>
+                                <DialogTitle>پاسخ به درخواست</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <h4 className="font-medium mb-2">پیام کاربر:</h4>
+                                  <p className="bg-gray-100 p-3 rounded-lg">{inquiry.message}</p>
+                                </div>
+                                <div>
+                                  <h4 className="font-medium mb-2">پاسخ شما:</h4>
+                                  <Textarea
+                                    value={response}
+                                    onChange={(e) => setResponse(e.target.value)}
+                                    placeholder="پاسخ خود را اینجا بنویسید..."
+                                    className="min-h-[120px] text-right"
+                                  />
+                                </div>
+                                <div className="flex justify-end gap-2">
+                                  <Button variant="outline">لغو</Button>
+                                  <Button onClick={handleSendResponse} className="bg-[#FF6A5C] hover:bg-[#FF6A5C]/90">
+                                    <Send className="h-4 w-4 mr-2" />
+                                    ارسال پاسخ
+                                  </Button>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Consultations Tab */}
+        <TabsContent value="consultations">
+          <Card>
+            <CardHeader>
+              <CardTitle>مشاوره‌های برنامه‌ریزی شده</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-right">کاربر</TableHead>
+                    <TableHead className="text-right">خدمت</TableHead>
+                    <TableHead className="text-right">تاریخ</TableHead>
+                    <TableHead className="text-right">ساعت</TableHead>
+                    <TableHead className="text-right">وضعیت</TableHead>
+                    <TableHead className="text-right">یادداشت</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {mockConsultations.map((consultation) => (
+                    <TableRow key={consultation.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{consultation.userName}</p>
+                          <p className="text-sm text-gray-600">{consultation.userEmail}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>{consultation.service}</TableCell>
+                      <TableCell>{consultation.date.toLocaleDateString("fa-IR")}</TableCell>
+                      <TableCell>{consultation.time}</TableCell>
+                      <TableCell>{getStatusBadge(consultation.status)}</TableCell>
+                      <TableCell>{consultation.notes || "-"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

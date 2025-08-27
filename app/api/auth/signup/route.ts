@@ -2,40 +2,120 @@ import { type NextRequest, NextResponse } from "next/server"
 import { verifyRecaptcha } from "@/lib/recaptcha"
 
 export async function POST(request: NextRequest) {
-  try {
-    const { email, password, captchaToken } = await request.json()
+  console.log("📝 Sign-up attempt started")
 
-    // Verify reCAPTCHA
+  try {
+    const body = await request.json()
+    const { email, password, firstName, lastName, phone, captchaToken } = body
+
+    console.log("📧 Sign-up data:", {
+      email,
+      firstName,
+      lastName,
+      phone,
+      hasPassword: !!password,
+      hasCaptchaToken: !!captchaToken,
+    })
+
+    // Verify reCAPTCHA first
+    console.log("🤖 Verifying reCAPTCHA...")
     const isRecaptchaValid = await verifyRecaptcha(captchaToken)
+
     if (!isRecaptchaValid) {
-      return NextResponse.json({ error: "reCAPTCHA verification failed" }, { status: 400 })
+      console.log("❌ reCAPTCHA verification failed")
+      return NextResponse.json(
+        {
+          success: false,
+          error: "تأیید reCAPTCHA ناموفق بود. لطفاً دوباره تلاش کنید.",
+        },
+        { status: 400 },
+      )
     }
+
+    console.log("✅ reCAPTCHA verification successful")
 
     // Validate input
     if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
+      console.log("❌ Missing email or password")
+      return NextResponse.json(
+        {
+          success: false,
+          error: "ایمیل و رمز عبور الزامی است",
+        },
+        { status: 400 },
+      )
     }
 
     if (password.length < 8) {
-      return NextResponse.json({ error: "Password must be at least 8 characters long" }, { status: 400 })
+      console.log("❌ Password too short")
+      return NextResponse.json(
+        {
+          success: false,
+          error: "رمز عبور باید حداقل ۸ کاراکتر باشد",
+        },
+        { status: 400 },
+      )
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
+      console.log("❌ Invalid email format:", email)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "فرمت ایمیل نامعتبر است",
+        },
+        { status: 400 },
+      )
     }
 
-    // For demo purposes, just log and return success
-    console.log("User signup:", { email })
+    // Phone validation (Iranian format)
+    const phoneRegex = /^09\d{9}$/
+    if (phone && !phoneRegex.test(phone)) {
+      console.log("❌ Invalid phone format:", phone)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "فرمت شماره تماس نامعتبر است (مثال: 09123456789)",
+        },
+        { status: 400 },
+      )
+    }
+
+    // Simulate user creation
+    console.log("👤 Creating new user...")
+
+    // In a real app, you would:
+    // 1. Check if email already exists
+    // 2. Hash the password
+    // 3. Save to database
+    // 4. Send verification email
+
+    const newUser = {
+      id: `user_${Date.now()}`,
+      email,
+      firstName,
+      lastName,
+      phone,
+      createdAt: new Date().toISOString(),
+    }
+
+    console.log("✅ User created successfully:", newUser.id)
 
     return NextResponse.json({
       success: true,
-      message: "Account created successfully!",
-      user: { email },
+      message: "حساب کاربری با موفقیت ایجاد شد!",
+      user: newUser,
     })
   } catch (error) {
-    console.error("Signup error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("💥 Sign-up error:", error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: "خطای داخلی سرور. لطفاً دوباره تلاش کنید.",
+      },
+      { status: 500 },
+    )
   }
 }

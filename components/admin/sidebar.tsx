@@ -9,7 +9,18 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Home, User, FileText, ShoppingBag, MessageSquare, Menu, LogOut } from "lucide-react"
+import {
+  Home,
+  Users,
+  FileText,
+  ShoppingBag,
+  MessageSquare,
+  Menu,
+  LogOut,
+  BarChart2,
+  Settings,
+  CreditCard,
+} from "lucide-react"
 
 interface NavItem {
   title: string
@@ -20,32 +31,47 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     title: "داشبورد",
-    href: "/dashboard",
+    href: "/admin",
     icon: <Home className="h-5 w-5" />,
   },
   {
-    title: "پروفایل",
-    href: "/dashboard/profile",
-    icon: <User className="h-5 w-5" />,
+    title: "کاربران",
+    href: "/admin/users",
+    icon: <Users className="h-5 w-5" />,
   },
   {
-    title: "درخواست‌های من",
-    href: "/dashboard/applications",
+    title: "درخواست‌ها",
+    href: "/admin/applications",
     icon: <FileText className="h-5 w-5" />,
   },
   {
     title: "خدمات",
-    href: "/dashboard/services",
+    href: "/admin/services",
     icon: <ShoppingBag className="h-5 w-5" />,
   },
   {
+    title: "سفارشات",
+    href: "/admin/orders",
+    icon: <CreditCard className="h-5 w-5" />,
+  },
+  {
     title: "پیام‌ها",
-    href: "/dashboard/messages",
+    href: "/admin/messages",
     icon: <MessageSquare className="h-5 w-5" />,
+  },
+  {
+    title: "گزارشات",
+    href: "/admin/reports",
+    icon: <BarChart2 className="h-5 w-5" />,
+  },
+  {
+    title: "تنظیمات",
+    href: "/admin/settings",
+    icon: <Settings className="h-5 w-5" />,
   },
 ]
 
-export function DashboardSidebar() {
+export function AdminSidebar() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -82,6 +108,7 @@ function MobileSidebar({
       <div className="p-6 border-b">
         <Link href="/" className="flex items-center gap-2">
           <span className="font-bold text-xl">اپلای‌گرافی</span>
+          <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">ادمین</span>
         </Link>
       </div>
       <ScrollArea className="flex-1 p-4">
@@ -120,6 +147,7 @@ function DesktopSidebar({ pathname }: { pathname: string }) {
       <div className="p-6 border-b">
         <Link href="/" className="flex items-center gap-2">
           <span className="font-bold text-xl">اپلای‌گرافی</span>
+          <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded">ادمین</span>
         </Link>
       </div>
       <ScrollArea className="flex-1 p-4">

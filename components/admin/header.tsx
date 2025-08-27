@@ -17,25 +17,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bell, ChevronDown, LogOut, Settings, User } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
-export function DashboardHeader() {
+export function AdminHeader() {
   const pathname = usePathname()
   const [notifications, setNotifications] = useState([
     {
       id: "1",
-      title: "درخواست شما تایید شد",
-      description: "درخواست دانشگاه آلمان شما تایید شده است.",
+      title: "درخواست جدید",
+      description: "یک درخواست جدید دریافت شده است.",
       read: false,
     },
     {
       id: "2",
       title: "پیام جدید",
-      description: "یک پیام جدید از مشاور خود دارید.",
+      description: "یک پیام جدید از کاربر دریافت شده است.",
       read: false,
     },
     {
       id: "3",
-      title: "یادآوری مهلت",
-      description: "مهلت ارسال مدارک شما تا فردا است.",
+      title: "سفارش جدید",
+      description: "یک سفارش جدید ثبت شده است.",
       read: true,
     },
   ])
@@ -54,17 +54,23 @@ export function DashboardHeader() {
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-6">
       <div className="hidden md:block w-full">
         <h1 className="text-lg font-semibold">
-          {pathname === "/dashboard"
+          {pathname === "/admin"
             ? "داشبورد"
-            : pathname === "/dashboard/profile"
-              ? "پروفایل"
-              : pathname === "/dashboard/applications"
-                ? "درخواست‌های من"
-                : pathname === "/dashboard/services"
+            : pathname === "/admin/users"
+              ? "کاربران"
+              : pathname === "/admin/applications"
+                ? "درخواست‌ها"
+                : pathname === "/admin/services"
                   ? "خدمات"
-                  : pathname === "/dashboard/messages"
-                    ? "پیام‌ها"
-                    : ""}
+                  : pathname === "/admin/orders"
+                    ? "سفارشات"
+                    : pathname === "/admin/messages"
+                      ? "پیام‌ها"
+                      : pathname === "/admin/reports"
+                        ? "گزارشات"
+                        : pathname === "/admin/settings"
+                          ? "تنظیمات"
+                          : ""}
         </h1>
       </div>
       <div className="flex items-center gap-4 md:mr-auto">
@@ -110,7 +116,7 @@ export function DashboardHeader() {
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/notifications" className="flex justify-center text-sm font-medium">
+              <Link href="/admin/notifications" className="flex justify-center text-sm font-medium">
                 مشاهده همه اعلان‌ها
               </Link>
             </DropdownMenuItem>
@@ -120,11 +126,11 @@ export function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2 px-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/placeholder.svg" alt="تصویر کاربر" />
-                <AvatarFallback>کا</AvatarFallback>
+                <AvatarImage src="/placeholder.svg" alt="تصویر مدیر" />
+                <AvatarFallback>مد</AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start text-sm">
-                <span className="font-medium">کاربر نمونه</span>
+                <span className="font-medium">مدیر سیستم</span>
               </div>
               <ChevronDown className="h-4 w-4 opacity-50" />
             </Button>
@@ -133,13 +139,13 @@ export function DashboardHeader() {
             <DropdownMenuLabel>حساب کاربری من</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/profile" className="flex items-center">
+              <Link href="/admin/profile" className="flex items-center">
                 <User className="ml-2 h-4 w-4" />
                 پروفایل
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings" className="flex items-center">
+              <Link href="/admin/settings" className="flex items-center">
                 <Settings className="ml-2 h-4 w-4" />
                 تنظیمات
               </Link>

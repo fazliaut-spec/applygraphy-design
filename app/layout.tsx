@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "اپلای‌گرافی - پلتفرم هوشمند مهاجرت تحصیلی",
   description: "بهترین پلتفرم برای مشاوره تحصیل در خارج، ویزا، و خدمات مهاجرت تحصیلی",
-
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
