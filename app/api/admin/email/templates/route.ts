@@ -1,14 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getAllActiveTemplates, getTemplatesByCategory, getTemplateById } from "@/lib/email/templates"
+import { getAllActiveTemplates, getTemplateById, getTemplatesByCategory } from "@/lib/email/templates"
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get("category")
-    const id = searchParams.get("id")
+    const templateId = searchParams.get("id")
 
-    if (id) {
-      const template = getTemplateById(id)
+    if (templateId) {
+      const template = getTemplateById(templateId)
       if (!template) {
         return NextResponse.json({ error: "Template not found" }, { status: 404 })
       }
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const templates = getAllActiveTemplates()
     return NextResponse.json(templates)
   } catch (error) {
-    console.error("Templates API error:", error)
+    console.error("Error fetching templates:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -34,32 +34,29 @@ export async function POST(request: NextRequest) {
 
     // Here you would typically save to database
     // For now, we'll just return success
+    console.log("Creating new template:", templateData)
 
-    return NextResponse.json({
-      success: true,
-      message: "Template created successfully",
-      template: templateData,
-    })
+    return NextResponse.json({ message: "Template created successfully", id: Date.now().toString() })
   } catch (error) {
-    console.error("Create template error:", error)
+    console.error("Error creating template:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const templateData = await request.json()
+    const { id, ...templateData } = await request.json()
+
+    if (!id) {
+      return NextResponse.json({ error: "Template ID is required" }, { status: 400 })
+    }
 
     // Here you would typically update in database
-    // For now, we'll just return success
+    console.log("Updating template:", id, templateData)
 
-    return NextResponse.json({
-      success: true,
-      message: "Template updated successfully",
-      template: templateData,
-    })
+    return NextResponse.json({ message: "Template updated successfully" })
   } catch (error) {
-    console.error("Update template error:", error)
+    console.error("Error updating template:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -74,14 +71,11 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Here you would typically delete from database
-    // For now, we'll just return success
+    console.log("Deleting template:", id)
 
-    return NextResponse.json({
-      success: true,
-      message: "Template deleted successfully",
-    })
+    return NextResponse.json({ message: "Template deleted successfully" })
   } catch (error) {
-    console.error("Delete template error:", error)
+    console.error("Error deleting template:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

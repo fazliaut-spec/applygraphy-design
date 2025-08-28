@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,109 +10,137 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Mail,
-  Eye,
-  Edit,
-  Send,
-  Search,
-  Filter,
-  Plus,
-  Copy,
-  Users,
-  CreditCard,
-  FileText,
-  Plane,
-  MessageCircle,
-} from "lucide-react"
-import { type EmailTemplate, getAllActiveTemplates } from "@/lib/email/templates"
-import { toast } from "sonner"
-
-const categoryIcons = {
-  welcome: Users,
-  consultation: MessageCircle,
-  payment: CreditCard,
-  application: FileText,
-  visa: Plane,
-  followup: Mail,
-}
+import { toast } from "@/hooks/use-toast"
+import { Search, Eye, Edit, Send, Plus, Copy, Mail, Filter } from "lucide-react"
+import { emailTemplates, type EmailTemplate } from "@/lib/email/templates"
 
 const categoryColors = {
-  welcome: "bg-green-100 text-green-800",
-  consultation: "bg-blue-100 text-blue-800",
-  payment: "bg-purple-100 text-purple-800",
-  application: "bg-orange-100 text-orange-800",
-  visa: "bg-yellow-100 text-yellow-800",
-  followup: "bg-gray-100 text-gray-800",
+  welcome: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+  consultation: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+  payment: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+  application: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+  visa: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+  followup: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 }
 
-export default function EmailTemplates() {
-  const [templates, setTemplates] = useState<EmailTemplate[]>([])
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null)
+const categoryLabels = {
+  welcome: "خوش‌آمدگویی",
+  consultation: "مشاوره",
+  payment: "پرداخت",
+  application: "درخواست",
+  visa: "ویزا",
+  followup: "پیگیری",
+}
+
+export function EmailTemplates() {
+  const [templates, setTemplates] = useState<EmailTemplate[]>(emailTemplates)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null)
+  const [previewVariables, setPreviewVariables] = useState<Record<string, string>>({})
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [testEmail, setTestEmail] = useState("")
-  const [testVariables, setTestVariables] = useState<Record<string, string>>({})
-
-  useEffect(() => {
-    loadTemplates()
-  }, [])
-
-  const loadTemplates = () => {
-    const allTemplates = getAllActiveTemplates()
-    setTemplates(allTemplates)
-  }
 
   const filteredTemplates = templates.filter((template) => {
     const matchesSearch =
       template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      template.nameEn.toLowerCase().includes(searchTerm.toLowerCase())
+      template.subject.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === "all" || template.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
   const handlePreview = (template: EmailTemplate) => {
     setSelectedTemplate(template)
-    // Initialize test variables with sample data
-    const sampleVariables: Record<string, string> = {}
+    // Set default values for variables
+    const defaultVariables: Record<string, string> = {}
     template.variables.forEach((variable) => {
       switch (variable) {
-        case "firstName":
-          sampleVariables[variable] = "احمد"
+        case "userName":
+          defaultVariables[variable] = "احمد محمدی"
           break
-        case "lastName":
-          sampleVariables[variable] = "محمدی"
+        case "userEmail":
+          defaultVariables[variable] = "ahmad@example.com"
           break
-        case "email":
-          sampleVariables[variable] = "ahmad@example.com"
+        case "consultationDate":
+          defaultVariables[variable] = "1403/08/15"
+          break
+        case "consultationTime":
+          defaultVariables[variable] = "14:30"
+          break
+        case "consultantName":
+          defaultVariables[variable] = "دکتر علی احمدی"
+          break
+        case "orderNumber":
+          defaultVariables[variable] = "ORD-2024-001"
           break
         case "amount":
-          sampleVariables[variable] = "2,500,000"
+          defaultVariables[variable] = "2,500,000"
+          break
+        case "serviceName":
+          defaultVariables[variable] = "مشاوره تحصیلی کانادا"
+          break
+        case "universityName":
+          defaultVariables[variable] = "دانشگاه تورنتو"
+          break
+        case "status":
+          defaultVariables[variable] = "در حال بررسی"
+          break
+        case "nextStep":
+          defaultVariables[variable] = "ارسال مدارک تکمیلی"
+          break
+        case "visaType":
+          defaultVariables[variable] = "ویزای تحصیلی"
           break
         case "country":
-          sampleVariables[variable] = "کانادا"
+          defaultVariables[variable] = "کانادا"
           break
-        case "university":
-          sampleVariables[variable] = "دانشگاه تورنتو"
+        case "approvalDate":
+          defaultVariables[variable] = "1403/08/20"
           break
-        case "serviceType":
-          sampleVariables[variable] = "مشاوره تحصیلی"
+        case "validityPeriod":
+          defaultVariables[variable] = "4 سال"
+          break
+        case "reminderTitle":
+          defaultVariables[variable] = "ارسال مدارک دانشگاه"
+          break
+        case "dueDate":
+          defaultVariables[variable] = "1403/08/25"
+          break
+        case "actionRequired":
+          defaultVariables[variable] = "ارسال رزومه و انگیزه‌نامه"
+          break
+        case "contactInfo":
+          defaultVariables[variable] = "021-12345678"
+          break
+        case "dashboardUrl":
+          defaultVariables[variable] = "https://applygraphy.com/dashboard"
+          break
+        case "meetingLink":
+          defaultVariables[variable] = "https://meet.google.com/abc-defg-hij"
+          break
+        case "applicationNumber":
+          defaultVariables[variable] = "APP-2024-001"
+          break
+        case "paymentDate":
+          defaultVariables[variable] = "1403/08/10"
           break
         default:
-          sampleVariables[variable] = `[${variable}]`
+          defaultVariables[variable] = `[${variable}]`
       }
     })
-    setTestVariables(sampleVariables)
+    setPreviewVariables(defaultVariables)
     setIsPreviewOpen(true)
   }
 
   const handleSendTest = async () => {
     if (!selectedTemplate || !testEmail) {
-      toast.error("لطفاً ایمیل مقصد را وارد کنید")
+      toast({
+        title: "خطا",
+        description: "لطفاً ایمیل مقصد را وارد کنید",
+        variant: "destructive",
+      })
       return
     }
 
@@ -124,38 +152,56 @@ export default function EmailTemplates() {
         },
         body: JSON.stringify({
           templateId: selectedTemplate.id,
-          to: testEmail,
-          variables: testVariables,
+          email: testEmail,
+          variables: previewVariables,
         }),
       })
 
       if (response.ok) {
-        toast.success("ایمیل تست با موفقیت ارسال شد")
+        toast({
+          title: "موفق",
+          description: "ایمیل تست با موفقیت ارسال شد",
+        })
+        setTestEmail("")
       } else {
-        toast.error("خطا در ارسال ایمیل تست")
+        throw new Error("Failed to send test email")
       }
     } catch (error) {
-      toast.error("خطا در ارسال ایمیل تست")
+      toast({
+        title: "خطا",
+        description: "خطا در ارسال ایمیل تست",
+        variant: "destructive",
+      })
     }
   }
 
-  const renderPreviewContent = () => {
-    if (!selectedTemplate) return ""
+  const handleCopyTemplate = (template: EmailTemplate) => {
+    navigator.clipboard.writeText(template.htmlContent)
+    toast({
+      title: "کپی شد",
+      description: "محتوای قالب در کلیپ‌بورد کپی شد",
+    })
+  }
 
-    let content = selectedTemplate.htmlContent
-    Object.entries(testVariables).forEach(([key, value]) => {
-      content = content.replace(new RegExp(`{{${key}}}`, "g"), value)
+  const renderPreview = () => {
+    if (!selectedTemplate) return null
+
+    let htmlContent = selectedTemplate.htmlContent
+    Object.entries(previewVariables).forEach(([key, value]) => {
+      const placeholder = `{{${key}}}`
+      htmlContent = htmlContent.replace(new RegExp(placeholder, "g"), value)
     })
 
-    return content
+    return (
+      <div className="email-preview border rounded-lg p-4 bg-white" dangerouslySetInnerHTML={{ __html: htmlContent }} />
+    )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 font-iranSans">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">قالب‌های ایمیل</h2>
+          <h2 className="text-2xl font-bold">قالب‌های ایمیل</h2>
           <p className="text-muted-foreground">مدیریت و ویرایش قالب‌های ایمیل سیستم</p>
         </div>
         <Button>
@@ -164,13 +210,13 @@ export default function EmailTemplates() {
         </Button>
       </div>
 
-      {/* Filters */}
+      {/* Search and Filter */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="p-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="جستجو در قالب‌ها..."
                   value={searchTerm}
@@ -180,13 +226,13 @@ export default function EmailTemplates() {
               </div>
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-full md:w-48">
                 <Filter className="w-4 h-4 ml-2" />
                 <SelectValue placeholder="دسته‌بندی" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">همه دسته‌ها</SelectItem>
-                <SelectItem value="welcome">خوشامدگویی</SelectItem>
+                <SelectItem value="welcome">خوش‌آمدگویی</SelectItem>
                 <SelectItem value="consultation">مشاوره</SelectItem>
                 <SelectItem value="payment">پرداخت</SelectItem>
                 <SelectItem value="application">درخواست</SelectItem>
@@ -200,73 +246,58 @@ export default function EmailTemplates() {
 
       {/* Templates Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.map((template) => {
-          const IconComponent = categoryIcons[template.category]
-          const colorClass = categoryColors[template.category]
-
-          return (
-            <Card key={template.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <Badge className={colorClass}>
-                    <IconComponent className="w-3 h-3 ml-1" />
-                    {template.category}
-                  </Badge>
-                  <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => handlePreview(template)}>
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <Copy className="w-4 h-4" />
-                    </Button>
+        {filteredTemplates.map((template) => (
+          <Card key={template.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-lg">{template.name}</CardTitle>
+                  <CardDescription className="mt-1 line-clamp-2">{template.subject}</CardDescription>
+                </div>
+                <Badge className={categoryColors[template.category]}>{categoryLabels[template.category]}</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <span>متغیرها: {template.variables.length}</span>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={template.isActive} size="sm" />
+                    <span>{template.isActive ? "فعال" : "غیرفعال"}</span>
                   </div>
                 </div>
-                <CardTitle className="text-lg">{template.name}</CardTitle>
-                <CardDescription className="text-sm">{template.nameEn}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-xs text-muted-foreground">موضوع ایمیل</Label>
-                    <p className="text-sm font-medium truncate">{template.subject}</p>
-                  </div>
 
-                  {template.variables.length > 0 && (
-                    <div>
-                      <Label className="text-xs text-muted-foreground">متغیرها</Label>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {template.variables.slice(0, 3).map((variable) => (
-                          <Badge key={variable} variant="outline" className="text-xs">
-                            {variable}
-                          </Badge>
-                        ))}
-                        {template.variables.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{template.variables.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-2">
-                      <Switch checked={template.isActive} size="sm" />
-                      <Label className="text-xs">فعال</Label>
-                    </div>
-                    <Button size="sm" onClick={() => handlePreview(template)}>
-                      <Eye className="w-4 h-4 ml-1" />
-                      پیش‌نمایش
-                    </Button>
+                {template.variables.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {template.variables.slice(0, 3).map((variable) => (
+                      <Badge key={variable} variant="outline" className="text-xs">
+                        {variable}
+                      </Badge>
+                    ))}
+                    {template.variables.length > 3 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{template.variables.length - 3}
+                      </Badge>
+                    )}
                   </div>
+                )}
+
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => handlePreview(template)} className="flex-1">
+                    <Eye className="w-4 h-4 ml-1" />
+                    پیش‌نمایش
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleCopyTemplate(template)}>
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <Edit className="w-4 h-4" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          )
-        })}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Preview Dialog */}
@@ -294,7 +325,10 @@ export default function EmailTemplates() {
                     <div className="flex items-center gap-2">
                       <Label className="text-sm font-medium">موضوع:</Label>
                       <span className="text-sm">
-                        {selectedTemplate?.subject.replace(/{{(\w+)}}/g, (match, key) => testVariables[key] || match)}
+                        {selectedTemplate?.subject.replace(
+                          /{{(\w+)}}/g,
+                          (match, key) => previewVariables[key] || match,
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -303,9 +337,7 @@ export default function EmailTemplates() {
                     </div>
                   </div>
                 </div>
-                <ScrollArea className="h-[400px]">
-                  <div className="p-4" dangerouslySetInnerHTML={{ __html: renderPreviewContent() }} />
-                </ScrollArea>
+                <ScrollArea className="h-96 w-full">{renderPreview()}</ScrollArea>
               </div>
             </TabsContent>
 
@@ -316,9 +348,9 @@ export default function EmailTemplates() {
                     <Label htmlFor={variable}>{variable}</Label>
                     <Input
                       id={variable}
-                      value={testVariables[variable] || ""}
+                      value={previewVariables[variable] || ""}
                       onChange={(e) =>
-                        setTestVariables((prev) => ({
+                        setPreviewVariables((prev) => ({
                           ...prev,
                           [variable]: e.target.value,
                         }))
@@ -332,7 +364,7 @@ export default function EmailTemplates() {
 
             <TabsContent value="test" className="space-y-4">
               <div className="space-y-4">
-                <div className="space-y-2">
+                <div>
                   <Label htmlFor="testEmail">ایمیل مقصد</Label>
                   <Input
                     id="testEmail"
@@ -342,8 +374,6 @@ export default function EmailTemplates() {
                     placeholder="test@example.com"
                   />
                 </div>
-
-                <Separator />
 
                 <div className="bg-muted p-4 rounded-lg">
                   <h4 className="font-medium mb-2">اطلاعات ارسال:</h4>

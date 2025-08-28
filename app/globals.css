@@ -2,7 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+/* IRANSans Font Import */
+@font-face {
+  font-family: "IRANSans";
+  src: url("/fonts/IRANSans-Light.woff2") format("woff2"), url("/fonts/IRANSans-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IRANSans";
+  src: url("/fonts/IRANSans-Regular.woff2") format("woff2"), url("/fonts/IRANSans-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IRANSans";
+  src: url("/fonts/IRANSans-Medium.woff2") format("woff2"), url("/fonts/IRANSans-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IRANSans";
+  src: url("/fonts/IRANSans-Bold.woff2") format("woff2"), url("/fonts/IRANSans-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --background: 0 0% 100%;
@@ -66,7 +97,9 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: "Inter", "Tahoma", Arial, sans-serif;
+  font-family: "IRANSans", "Tahoma", Arial, sans-serif;
+  direction: rtl;
+  text-align: right;
 }
 
 /* RTL Support */
@@ -84,9 +117,18 @@ body {
   margin-right: 1rem;
 }
 
+[dir="rtl"] .space-x-6 > * + * {
+  margin-left: 0;
+  margin-right: 1.5rem;
+}
+
 /* Persian/Farsi Font Support */
 .font-persian {
-  font-family: "Tahoma", "Arial", sans-serif;
+  font-family: "IRANSans", "Tahoma", Arial, sans-serif;
+}
+
+.font-iranSans {
+  font-family: "IRANSans", "Tahoma", Arial, sans-serif;
 }
 
 /* Custom scrollbar */
@@ -135,9 +177,11 @@ body {
 
 /* Email template specific styles */
 .email-preview {
-  font-family: "Tahoma", Arial, sans-serif;
+  font-family: "IRANSans", "Tahoma", Arial, sans-serif;
   line-height: 1.6;
   color: #374151;
+  direction: rtl;
+  text-align: right;
 }
 
 .email-preview h1,
@@ -146,10 +190,12 @@ body {
 .email-preview h4 {
   margin-top: 0;
   margin-bottom: 1rem;
+  font-family: "IRANSans", "Tahoma", Arial, sans-serif;
 }
 
 .email-preview p {
   margin-bottom: 1rem;
+  font-family: "IRANSans", "Tahoma", Arial, sans-serif;
 }
 
 .email-preview a {
@@ -175,11 +221,6 @@ body {
   100% {
     background-position: 200% 0;
   }
-}
-
-/* Toast customization */
-.sonner-toast {
-  font-family: "Tahoma", Arial, sans-serif;
 }
 
 /* Form validation */
@@ -208,4 +249,79 @@ body {
   .no-print {
     display: none !important;
   }
+}
+
+/* Persian number styles */
+.persian-numbers {
+  font-feature-settings: "ss01" on;
+}
+
+/* Smooth animations */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Custom focus styles */
+.focus-coral:focus {
+  outline: 2px solid #ff6a5c;
+  outline-offset: 2px;
+}
+
+.focus-navy:focus {
+  outline: 2px solid #02153d;
+  outline-offset: 2px;
+}
+
+/* Gradient text utilities */
+.gradient-text-coral-navy {
+  background: linear-gradient(135deg, #ff6a5c 0%, #02153d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-navy-coral {
+  background: linear-gradient(135deg, #02153d 0%, #ff6a5c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
