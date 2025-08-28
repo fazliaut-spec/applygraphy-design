@@ -2,200 +2,106 @@ export interface EmailTemplate {
   id: string
   name: string
   subject: string
-  category: "welcome" | "consultation" | "payment" | "application" | "visa" | "followup"
+  content: string
   variables: string[]
-  htmlContent: string
-  textContent: string
+  category: "welcome" | "consultation" | "follow-up" | "payment" | "application" | "visa"
   isActive: boolean
-  createdAt: Date
-  updatedAt: Date
 }
 
 export const emailTemplates: EmailTemplate[] = [
   {
-    id: "welcome-new-user",
-    name: "خوش‌آمدگویی کاربر جدید",
-    subject: "به اپلای‌گرافی خوش آمدید - {{userName}}",
+    id: "welcome-new-customer",
+    name: "خوشامدگویی به مشتری جدید",
+    subject: "خوش آمدید به Applygraphy - آماده همراهی شما هستیم",
     category: "welcome",
-    variables: ["userName", "userEmail", "dashboardUrl"],
     isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    textContent: `
-سلام {{userName}} عزیز،
-
-به خانواده بزرگ اپلای‌گرافی خوش آمدید!
-
-ما خوشحالیم که شما را در مسیر تحقق رویای تحصیل در خارج همراهی کنیم.
-
-برای شروع، می‌توانید:
-- پروفایل خود را تکمیل کنید
-- با مشاوران ما مشورت کنید
-- خدمات مختلف ما را بررسی کنید
-
-لینک داشبورد شما: {{dashboardUrl}}
-
-با تشکر،
-تیم اپلای‌گرافی
-    `,
-    htmlContent: `
+    variables: ["customerName", "serviceType"],
+    content: `
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خوش آمدید به اپلای‌گرافی</title>
+    <title>خوش آمدید به Applygraphy</title>
     <style>
-        @font-face {
-            font-family: 'IRANSans';
-            src: url('data:font/woff2;base64,') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-        body {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #ff6a5c 0%, #02153d 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
-            font-weight: bold;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .welcome-message {
-            font-size: 18px;
-            margin-bottom: 30px;
-            color: #1f2937;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .features {
-            background-color: #f8fafc;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 16px;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .feature-icon {
-            width: 20px;
-            height: 20px;
-            background-color: #ff6a5c;
-            border-radius: 50%;
-            margin-left: 15px;
-            flex-shrink: 0;
-        }
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #ff6a5c 0%, #02153d 100%);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            margin: 20px 0;
-            text-align: center;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-size: 14px;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .social-links {
-            margin-top: 20px;
-        }
-        .social-links a {
-            color: #ff6a5c;
-            text-decoration: none;
-            margin: 0 10px;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
+        body { font-family: 'Tahoma', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; padding: 20px 0; border-bottom: 3px solid #FF6A5C; margin-bottom: 30px; }
+        .logo { font-size: 28px; font-weight: bold; color: #02153D; margin-bottom: 10px; }
+        .tagline { color: #666; font-size: 14px; }
+        .content { padding: 20px 0; }
+        .greeting { font-size: 18px; color: #02153D; margin-bottom: 20px; }
+        .main-text { margin-bottom: 25px; line-height: 1.8; }
+        .highlight-box { background: linear-gradient(135deg, #FF6A5C10, #02153D10); padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #FF6A5C; }
+        .services-list { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .service-item { display: flex; align-items: center; margin: 10px 0; }
+        .service-icon { width: 20px; height: 20px; background-color: #FF6A5C; border-radius: 50%; margin-left: 10px; }
+        .cta-button { display: inline-block; background-color: #FF6A5C; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+        .contact-info { background-color: #02153D; color: white; padding: 20px; border-radius: 8px; margin: 30px 0; }
+        .footer { text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 30px; color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 به اپلای‌گرافی خوش آمدید</h1>
-            <p>مسیر موفقیت تحصیلی شما از اینجا شروع می‌شود</p>
+            <div class="logo">Applygraphy</div>
+            <div class="tagline">همراه شما در مسیر تحصیل در خارج</div>
         </div>
         
         <div class="content">
-            <div class="welcome-message">
-                <p>سلام <strong>{{userName}}</strong> عزیز،</p>
-                <p>به خانواده بزرگ اپلای‌گرافی خوش آمدید! ما خوشحالیم که شما را در مسیر تحقق رویای تحصیل در خارج همراهی کنیم.</p>
+            <div class="greeting">سلام {{customerName}} عزیز،</div>
+            
+            <div class="main-text">
+                از اینکه Applygraphy را برای {{serviceType}} انتخاب کرده‌اید، بسیار خوشحالیم. ما متعهد هستیم که بهترین خدمات و مشاوره را به شما ارائه دهیم.
             </div>
             
-            <div class="features">
-                <h3>حالا می‌توانید:</h3>
-                <div class="feature-item">
-                    <div class="feature-icon"></div>
-                    <span>پروفایل تحصیلی خود را تکمیل کنید</span>
+            <div class="highlight-box">
+                <strong>چرا Applygraphy؟</strong><br>
+                ✅ بیش از 5 سال تجربه در زمینه مشاوره تحصیلی<br>
+                ✅ همکاری با بیش از 200 دانشگاه معتبر جهان<br>
+                ✅ نرخ موفقیت بالای 95% در پذیرش دانشجویان<br>
+                ✅ پشتیبانی 24/7 در تمام مراحل
+            </div>
+            
+            <div class="services-list">
+                <h3>خدمات ما شامل:</h3>
+                <div class="service-item">
+                    <div class="service-icon"></div>
+                    <span>مشاوره انتخاب رشته و دانشگاه</span>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"></div>
-                    <span>با مشاوران مجرب ما مشورت کنید</span>
+                <div class="service-item">
+                    <div class="service-icon"></div>
+                    <span>تهیه و تنظیم مدارک درخواستی</span>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"></div>
-                    <span>دانشگاه‌های مناسب را پیدا کنید</span>
+                <div class="service-item">
+                    <div class="service-icon"></div>
+                    <span>راهنمایی برای آزمون‌های بین‌المللی</span>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"></div>
-                    <span>از خدمات تخصصی ما استفاده کنید</span>
+                <div class="service-item">
+                    <div class="service-icon"></div>
+                    <span>مشاوره ویزا و اقامت</span>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon"></div>
+                    <span>پشتیبانی پس از پذیرش</span>
                 </div>
             </div>
             
-            <div style="text-align: center;">
-                <a href="{{dashboardUrl}}" class="cta-button">
-                    شروع کنید 🚀
-                </a>
+            <div class="main-text">
+                تیم متخصص ما آماده است تا در اسرع وقت با شما تماس بگیرد و فرآیند مشاوره را آغاز کند. لطفاً منتظر تماس ما باشید.
             </div>
             
-            <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
-                اگر سوالی دارید، تیم پشتیبانی ما آماده کمک به شماست.
-            </p>
+            <div class="contact-info">
+                <h3>اطلاعات تماس:</h3>
+                📧 ایمیل: support@applygraphy.com<br>
+                📱 تلگرام: @ApplygraphySupport<br>
+                🌐 وب‌سایت: www.applygraphy.com
+            </div>
         </div>
         
         <div class="footer">
-            <p><strong>تیم اپلای‌گرافی</strong></p>
-            <p>همراه شما در مسیر موفقیت تحصیلی</p>
-            <div class="social-links">
-                <a href="#">تلگرام</a> |
-                <a href="#">اینستاگرام</a> |
-                <a href="#">واتساپ</a>
-            </div>
+            © 2024 Applygraphy. تمامی حقوق محفوظ است.<br>
+            این ایمیل به صورت خودکار ارسال شده است. لطفاً به آن پاسخ ندهید.
         </div>
     </div>
 </body>
@@ -203,177 +109,226 @@ export const emailTemplates: EmailTemplate[] = [
     `,
   },
   {
-    id: "consultation-booking",
-    name: "تأیید رزرو مشاوره",
-    subject: "مشاوره شما رزرو شد - {{consultationDate}}",
+    id: "consultation-request-received",
+    name: "تأیید دریافت درخواست مشاوره",
+    subject: "درخواست مشاوره شما دریافت شد - Applygraphy",
     category: "consultation",
-    variables: ["userName", "consultationDate", "consultationTime", "consultantName", "meetingLink"],
     isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    textContent: `
-سلام {{userName}} عزیز،
-
-مشاوره شما با موفقیت رزرو شد.
-
-جزئیات مشاوره:
-تاریخ: {{consultationDate}}
-ساعت: {{consultationTime}}
-مشاور: {{consultantName}}
-
-لینک جلسه: {{meetingLink}}
-
-لطفاً 15 دقیقه قبل از جلسه آماده باشید.
-
-با تشکر،
-تیم اپلای‌گرافی
-    `,
-    htmlContent: `
+    variables: ["customerName", "serviceType", "requestId", "responseTime"],
+    content: `
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأیید رزرو مشاوره</title>
+    <title>تأیید دریافت درخواست</title>
     <style>
-        body {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .booking-details {
-            background-color: #f0fdf4;
-            border: 2px solid #10b981;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #d1fae5;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #065f46;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-value {
-            color: #1f2937;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .meeting-link {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            display: inline-block;
-            margin: 20px 0;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .reminder {
-            background-color: #fef3c7;
-            border-right: 4px solid #f59e0b;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        p, li {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
+        body { font-family: 'Tahoma', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; padding: 20px 0; border-bottom: 3px solid #FF6A5C; margin-bottom: 30px; }
+        .logo { font-size: 28px; font-weight: bold; color: #02153D; margin-bottom: 10px; }
+        .status-badge { background-color: #4CAF50; color: white; padding: 8px 16px; border-radius: 20px; font-size: 14px; display: inline-block; margin: 10px 0; }
+        .request-details { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .detail-row { display: flex; justify-content: space-between; margin: 10px 0; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .detail-label { font-weight: bold; color: #02153D; }
+        .timeline { background: linear-gradient(135deg, #FF6A5C10, #02153D10); padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .timeline-item { display: flex; align-items: center; margin: 15px 0; }
+        .timeline-number { width: 30px; height: 30px; background-color: #FF6A5C; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-left: 15px; }
+        .contact-info { background-color: #02153D; color: white; padding: 20px; border-radius: 8px; margin: 30px 0; }
+        .footer { text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 30px; color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>✅ مشاوره شما رزرو شد</h1>
-            <p>آماده شوید برای یک جلسه مفید و کاربردی</p>
+            <div class="logo">Applygraphy</div>
+            <div class="status-badge">✓ درخواست دریافت شد</div>
         </div>
         
         <div class="content">
-            <p>سلام <strong>{{userName}}</strong> عزیز،</p>
-            <p>مشاوره شما با موفقیت رزرو شد. در ادامه جزئیات کامل جلسه را مشاهده می‌کنید:</p>
+            <h2>سلام {{customerName}} عزیز،</h2>
             
-            <div class="booking-details">
-                <h3 style="margin-top: 0; color: #065f46;">📅 جزئیات مشاوره</h3>
+            <p>درخواست مشاوره شما با موفقیت دریافت شد و در حال بررسی توسط تیم متخصص ما است.</p>
+            
+            <div class="request-details">
+                <h3>جزئیات درخواست:</h3>
                 <div class="detail-row">
-                    <span class="detail-label">تاریخ:</span>
-                    <span class="detail-value">{{consultationDate}}</span>
+                    <span class="detail-label">شماره درخواست:</span>
+                    <span>{{requestId}}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">ساعت:</span>
-                    <span class="detail-value">{{consultationTime}}</span>
+                    <span class="detail-label">نوع خدمت:</span>
+                    <span>{{serviceType}}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">مشاور:</span>
-                    <span class="detail-value">{{consultantName}}</span>
+                    <span class="detail-label">زمان دریافت:</span>
+                    <span>{{requestTime}}</span>
                 </div>
-                <div class="detail-row" style="border-bottom: none;">
-                    <span class="detail-label">نوع جلسه:</span>
-                    <span class="detail-value">آنلاین (ویدیو کال)</span>
+                <div class="detail-row">
+                    <span class="detail-label">زمان پاسخ تقریبی:</span>
+                    <span>{{responseTime}}</span>
                 </div>
             </div>
             
-            <div style="text-align: center;">
-                <a href="{{meetingLink}}" class="meeting-link">
-                    🎥 ورود به جلسه
-                </a>
+            <div class="timeline">
+                <h3>مراحل بعدی:</h3>
+                <div class="timeline-item">
+                    <div class="timeline-number">1</div>
+                    <div>
+                        <strong>بررسی درخواست</strong><br>
+                        <small>تیم ما درخواست شما را به دقت بررسی می‌کند</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">2</div>
+                    <div>
+                        <strong>تماس مشاور</strong><br>
+                        <small>مشاور متخصص با شما تماس خواهد گرفت</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">3</div>
+                    <div>
+                        <strong>ارائه پیشنهاد</strong><br>
+                        <small>بهترین گزینه‌ها و برنامه کاری ارائه می‌شود</small>
+                    </div>
+                </div>
             </div>
             
-            <div class="reminder">
-                <h4 style="margin-top: 0;">⏰ یادآوری مهم</h4>
-                <ul style="margin: 0; padding-right: 20px;">
-                    <li>لطفاً 15 دقیقه قبل از جلسه آماده باشید</li>
-                    <li>اتصال اینترنت پایدار داشته باشید</li>
-                    <li>سوالات خود را از قبل آماده کنید</li>
-                    <li>مدارک مورد نیاز را در دسترس داشته باشید</li>
-                </ul>
-            </div>
+            <p><strong>نکته مهم:</strong> لطفاً تلفن خود را در دسترس نگه دارید تا مشاور ما بتواند در اسرع وقت با شما تماس بگیرد.</p>
             
-            <p style="color: #6b7280; font-size: 14px;">
-                در صورت نیاز به تغییر زمان یا لغو جلسه، حداقل 24 ساعت قبل اطلاع دهید.
-            </p>
+            <div class="contact-info">
+                <h3>در صورت نیاز به تماس فوری:</h3>
+                📧 ایمیل: support@applygraphy.com<br>
+                📱 تلگرام: @ApplygraphySupport<br>
+                🌐 وب‌سایت: www.applygraphy.com
+            </div>
         </div>
         
         <div class="footer">
-            <p><strong>تیم اپلای‌گرافی</strong></p>
-            <p>منتظر دیدار شما هستیم</p>
+            © 2024 Applygraphy. تمامی حقوق محفوظ است.<br>
+            شماره درخواست: {{requestId}}
+        </div>
+    </div>
+</body>
+</html>
+    `,
+  },
+  {
+    id: "consultation-proposal",
+    name: "ارائه پیشنهاد مشاوره",
+    subject: "پیشنهاد ویژه برای {{customerName}} - Applygraphy",
+    category: "consultation",
+    isActive: true,
+    variables: ["customerName", "serviceType", "proposalDetails", "price", "timeline", "consultantName"],
+    content: `
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیشنهاد مشاوره</title>
+    <style>
+        body { font-family: 'Tahoma', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; padding: 20px 0; border-bottom: 3px solid #FF6A5C; margin-bottom: 30px; }
+        .logo { font-size: 28px; font-weight: bold; color: #02153D; margin-bottom: 10px; }
+        .proposal-badge { background: linear-gradient(135deg, #FF6A5C, #FF8A7C); color: white; padding: 10px 20px; border-radius: 25px; font-size: 16px; display: inline-block; margin: 10px 0; }
+        .consultant-info { background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #FF6A5C; }
+        .proposal-details { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .price-box { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .price-amount { font-size: 24px; font-weight: bold; margin: 10px 0; }
+        .timeline-box { background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .benefits-list { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .benefit-item { display: flex; align-items: center; margin: 10px 0; }
+        .benefit-icon { width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%; margin-left: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
+        .cta-section { text-align: center; padding: 30px 0; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #FF6A5C, #FF8A7C); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; margin: 10px; }
+        .contact-info { background-color: #02153D; color: white; padding: 20px; border-radius: 8px; margin: 30px 0; }
+        .footer { text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 30px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Applygraphy</div>
+            <div class="proposal-badge">🎯 پیشنهاد ویژه برای شما</div>
+        </div>
+        
+        <div class="content">
+            <h2>سلام {{customerName}} عزیز،</h2>
+            
+            <p>پس از بررسی دقیق درخواست شما، تیم متخصص ما بهترین برنامه را برای {{serviceType}} طراحی کرده است.</p>
+            
+            <div class="consultant-info">
+                <h3>👨‍🎓 مشاور اختصاصی شما:</h3>
+                <p><strong>{{consultantName}}</strong></p>
+                <p>متخصص در زمینه {{serviceType}} با بیش از 5 سال تجربه</p>
+            </div>
+            
+            <div class="proposal-details">
+                <h3>📋 جزئیات پیشنهاد:</h3>
+                {{proposalDetails}}
+            </div>
+            
+            <div class="price-box">
+                <h3>💰 هزینه خدمات</h3>
+                <div class="price-amount">{{price}}</div>
+                <p>شامل تمامی خدمات ذکر شده</p>
+            </div>
+            
+            <div class="timeline-box">
+                <h3>⏰ زمان‌بندی پیشنهادی:</h3>
+                <p>{{timeline}}</p>
+            </div>
+            
+            <div class="benefits-list">
+                <h3>✨ مزایای همکاری با ما:</h3>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <span>مشاوره رایگان در تمام مراحل</span>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <span>ضمانت بازگشت وجه در صورت عدم موفقیت</span>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <span>پشتیبانی 24/7 تا زمان اخذ ویزا</span>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <span>تخفیف ویژه برای خدمات بعدی</span>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <span>دسترسی به پنل اختصاصی</span>
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <h3>آماده شروع هستید؟</h3>
+                <p>برای تأیید پیشنهاد و شروع همکاری، روی دکمه زیر کلیک کنید:</p>
+                <a href="mailto:support@applygraphy.com?subject=تأیید پیشنهاد - {{customerName}}" class="cta-button">
+                    ✅ تأیید پیشنهاد
+                </a>
+                <a href="mailto:support@applygraphy.com?subject=درخواست تغییرات - {{customerName}}" class="cta-button" style="background: linear-gradient(135deg, #6c757d, #5a6268);">
+                    📝 درخواست تغییرات
+                </a>
+            </div>
+            
+            <div class="contact-info">
+                <h3>📞 تماس با مشاور:</h3>
+                📧 ایمیل: support@applygraphy.com<br>
+                📱 تلگرام: @ApplygraphySupport<br>
+                🌐 وب‌سایت: www.applygraphy.com<br><br>
+                <strong>مشاور شما: {{consultantName}}</strong>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2024 Applygraphy. تمامی حقوق محفوظ است.<br>
+            این پیشنهاد تا 7 روز اعتبار دارد.
         </div>
     </div>
 </body>
@@ -383,29 +338,11 @@ export const emailTemplates: EmailTemplate[] = [
   {
     id: "payment-confirmation",
     name: "تأیید پرداخت",
-    subject: "پرداخت شما تأیید شد - {{orderNumber}}",
+    subject: "پرداخت شما تأیید شد - شروع خدمات Applygraphy",
     category: "payment",
-    variables: ["userName", "orderNumber", "amount", "serviceName", "paymentDate"],
     isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    textContent: `
-سلام {{userName}} عزیز،
-
-پرداخت شما با موفقیت انجام شد.
-
-جزئیات پرداخت:
-شماره سفارش: {{orderNumber}}
-خدمت: {{serviceName}}
-مبلغ: {{amount}} تومان
-تاریخ پرداخت: {{paymentDate}}
-
-تیم ما به زودی با شما تماس خواهد گرفت.
-
-با تشکر،
-تیم اپلای‌گرافی
-    `,
-    htmlContent: `
+    variables: ["customerName", "serviceType", "amount", "paymentId", "nextSteps", "consultantName"],
+    content: `
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
@@ -413,138 +350,108 @@ export const emailTemplates: EmailTemplate[] = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تأیید پرداخت</title>
     <style>
-        body {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .payment-details {
-            background-color: #f0fdf4;
-            border: 2px solid #10b981;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #d1fae5;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #065f46;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-value {
-            color: #1f2937;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .amount {
-            font-size: 24px;
-            font-weight: bold;
-            color: #059669;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .next-steps {
-            background-color: #eff6ff;
-            border-right: 4px solid #3b82f6;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .success-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        p, li {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
+        body { font-family: 'Tahoma', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; padding: 20px 0; border-bottom: 3px solid #4CAF50; margin-bottom: 30px; }
+        .logo { font-size: 28px; font-weight: bold; color: #02153D; margin-bottom: 10px; }
+        .success-badge { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 12px 24px; border-radius: 25px; font-size: 16px; display: inline-block; margin: 10px 0; }
+        .payment-details { background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #4CAF50; }
+        .detail-row { display: flex; justify-content: space-between; margin: 10px 0; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .detail-label { font-weight: bold; color: #02153D; }
+        .amount-highlight { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .next-steps { background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .step-item { display: flex; align-items: flex-start; margin: 15px 0; }
+        .step-number { width: 30px; height: 30px; background-color: #FF6A5C; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-left: 15px; flex-shrink: 0; }
+        .consultant-box { background: linear-gradient(135deg, #02153D, #1a2b5c); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .access-info { background-color: #e8f5e8; border: 1px solid #4CAF50; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .contact-info { background-color: #02153D; color: white; padding: 20px; border-radius: 8px; margin: 30px 0; }
+        .footer { text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 30px; color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="success-icon">✅</div>
-            <h1>پرداخت موفق</h1>
-            <p>سفارش شما با موفقیت ثبت شد</p>
+            <div class="logo">Applygraphy</div>
+            <div class="success-badge">✅ پرداخت موفق</div>
         </div>
         
         <div class="content">
-            <p>سلام <strong>{{userName}}</strong> عزیز،</p>
-            <p>پرداخت شما با موفقیت انجام شد و سفارش شما در سیستم ثبت گردید.</p>
+            <h2>تبریک {{customerName}} عزیز! 🎉</h2>
+            
+            <p>پرداخت شما با موفقیت انجام شد و خدمات {{serviceType}} برای شما فعال گردید. ما آماده شروع همکاری هستیم!</p>
             
             <div class="payment-details">
-                <h3 style="margin-top: 0; color: #065f46;">💳 جزئیات پرداخت</h3>
+                <h3>💳 جزئیات پرداخت:</h3>
                 <div class="detail-row">
-                    <span class="detail-label">شماره سفارش:</span>
-                    <span class="detail-value">{{orderNumber}}</span>
+                    <span class="detail-label">شماره تراکنش:</span>
+                    <span>{{paymentId}}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">خدمت:</span>
-                    <span class="detail-value">{{serviceName}}</span>
+                    <span class="detail-label">نوع خدمت:</span>
+                    <span>{{serviceType}}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">تاریخ پرداخت:</span>
-                    <span class="detail-value">{{paymentDate}}</span>
+                    <span>{{paymentDate}}</span>
                 </div>
-                <div class="detail-row" style="border-bottom: none;">
-                    <span class="detail-label">مبلغ پرداختی:</span>
-                    <span class="detail-value amount">{{amount}} تومان</span>
+                <div class="detail-row">
+                    <span class="detail-label">وضعیت:</span>
+                    <span style="color: #4CAF50; font-weight: bold;">✅ تأیید شده</span>
                 </div>
+            </div>
+            
+            <div class="amount-highlight">
+                <h3>مبلغ پرداخت شده: {{amount}}</h3>
+                <p>رسید این تراکنش برای شما ایمیل شده است</p>
+            </div>
+            
+            <div class="consultant-box">
+                <h3>👨‍🎓 مشاور اختصاصی شما:</h3>
+                <p><strong>{{consultantName}}</strong></p>
+                <p>مشاور شما ظرف 24 ساعت آینده با شما تماس خواهد گرفت تا فرآیند کار را آغاز کند.</p>
             </div>
             
             <div class="next-steps">
-                <h4 style="margin-top: 0;">🚀 مراحل بعدی</h4>
-                <ul style="margin: 0; padding-right: 20px;">
-                    <li>تیم ما ظرف 24 ساعت با شما تماس خواهد گرفت</li>
-                    <li>مشاور اختصاصی شما تعیین می‌شود</li>
-                    <li>برنامه زمان‌بندی کار ارسال خواهد شد</li>
-                    <li>می‌توانید پیشرفت کار را در داشبورد دنبال کنید</li>
+                <h3>🚀 مراحل بعدی:</h3>
+                {{nextSteps}}
+            </div>
+            
+            <div class="access-info">
+                <h3>🔐 دسترسی به پنل کاربری:</h3>
+                <p>شما اکنون به پنل اختصاصی خود دسترسی دارید که از طریق آن می‌توانید:</p>
+                <ul>
+                    <li>پیگیری وضعیت درخواست خود</li>
+                    <li>مشاهده مدارک ارسالی</li>
+                    <li>ارتباط مستقیم با مشاور</li>
+                    <li>دریافت گزارش‌های پیشرفت</li>
+                </ul>
+                <p><strong>لینک ورود:</strong> <a href="https://applygraphy.com/dashboard">پنل کاربری</a></p>
+            </div>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3>📋 مدارک مورد نیاز:</h3>
+                <p>لطفاً مدارک زیر را آماده کنید تا مشاور شما بتواند فرآیند را سریع‌تر پیش ببرد:</p>
+                <ul>
+                    <li>مدارک تحصیلی (مدرک و ریز نمرات)</li>
+                    <li>مدرک زبان (در صورت داشتن)</li>
+                    <li>رزومه به‌روز</li>
+                    <li>نامه انگیزه (در صورت داشتن)</li>
+                    <li>کپی پاسپورت</li>
                 </ul>
             </div>
             
-            <p style="color: #6b7280; font-size: 14px;">
-                رسید پرداخت به ایمیل شما ارسال شده است. در صورت عدم دریافت، لطفاً پوشه اسپم را بررسی کنید.
-            </p>
+            <div class="contact-info">
+                <h3>📞 تماس فوری:</h3>
+                📧 ایمیل: support@applygraphy.com<br>
+                📱 تلگرام: @ApplygraphySupport<br>
+                🌐 پنل کاربری: www.applygraphy.com/dashboard<br><br>
+                <strong>مشاور شما: {{consultantName}}</strong>
+            </div>
         </div>
         
         <div class="footer">
-            <p><strong>تیم اپلای‌گرافی</strong></p>
-            <p>از اعتماد شما متشکریم</p>
+            © 2024 Applygraphy. تمامی حقوق محفوظ است.<br>
+            شماره تراکنش: {{paymentId}} | تاریخ: {{paymentDate}}
         </div>
     </div>
 </body>
@@ -552,179 +459,111 @@ export const emailTemplates: EmailTemplate[] = [
     `,
   },
   {
-    id: "application-status",
-    name: "وضعیت درخواست",
-    subject: "به‌روزرسانی درخواست شما - {{applicationNumber}}",
+    id: "application-status-update",
+    name: "به‌روزرسانی وضعیت درخواست",
+    subject: "به‌روزرسانی درخواست {{customerName}} - {{statusUpdate}}",
     category: "application",
-    variables: ["userName", "applicationNumber", "universityName", "status", "nextStep"],
     isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    textContent: `
-سلام {{userName}} عزیز،
-
-درخواست شما به‌روزرسانی شد.
-
-جزئیات:
-شماره درخواست: {{applicationNumber}}
-دانشگاه: {{universityName}}
-وضعیت فعلی: {{status}}
-مرحله بعدی: {{nextStep}}
-
-برای اطلاعات بیشتر به داشبورد خود مراجعه کنید.
-
-با تشکر،
-تیم اپلای‌گرافی
-    `,
-    htmlContent: `
+    variables: ["customerName", "applicationId", "statusUpdate", "details", "nextAction", "consultantName"],
+    content: `
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>به‌روزرسانی درخواست</title>
+    <title>به‌روزرسانی وضعیت</title>
     <style>
-        body {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .status-card {
-            background-color: #eff6ff;
-            border: 2px solid #3b82f6;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .status-badge {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 15px;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #dbeafe;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #1e40af;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-value {
-            color: #1f2937;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .progress-bar {
-            background-color: #e5e7eb;
-            height: 8px;
-            border-radius: 4px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            height: 100%;
-            width: 60%;
-            border-radius: 4px;
-        }
-        .next-step {
-            background-color: #fef3c7;
-            border-right: 4px solid #f59e0b;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        p, li {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
+        body { font-family: 'Tahoma', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; padding: 20px 0; border-bottom: 3px solid #FF6A5C; margin-bottom: 30px; }
+        .logo { font-size: 28px; font-weight: bold; color: #02153D; margin-bottom: 10px; }
+        .status-badge { padding: 10px 20px; border-radius: 25px; font-size: 16px; display: inline-block; margin: 10px 0; font-weight: bold; }
+        .status-progress { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
+        .status-pending { background: linear-gradient(135deg, #FF9800, #F57C00); color: white; }
+        .status-review { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; }
+        .application-info { background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #FF6A5C; }
+        .detail-row { display: flex; justify-content: space-between; margin: 10px 0; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .detail-label { font-weight: bold; color: #02153D; }
+        .update-details { background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .next-action { background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .progress-bar { background-color: #e0e0e0; height: 20px; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+        .progress-fill { background: linear-gradient(135deg, #4CAF50, #45a049); height: 100%; transition: width 0.3s ease; }
+        .consultant-info { background: linear-gradient(135deg, #02153D, #1a2b5c); color: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .contact-info { background-color: #02153D; color: white; padding: 20px; border-radius: 8px; margin: 30px 0; }
+        .footer { text-align: center; padding: 20px 0; border-top: 1px solid #eee; margin-top: 30px; color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📋 به‌روزرسانی درخواست</h1>
-            <p>وضعیت جدید درخواست شما</p>
+            <div class="logo">Applygraphy</div>
+            <div class="status-badge status-progress">📈 {{statusUpdate}}</div>
         </div>
         
         <div class="content">
-            <p>سلام <strong>{{userName}}</strong> عزیز،</p>
-            <p>درخواست شما به‌روزرسانی شده است. در ادامه جزئیات کامل را مشاهده کنید:</p>
+            <h2>سلام {{customerName}} عزیز،</h2>
             
-            <div class="status-card">
-                <div class="status-badge">{{status}}</div>
+            <p>خبر خوش! وضعیت درخواست شما به‌روزرسانی شده است.</p>
+            
+            <div class="application-info">
+                <h3>📋 اطلاعات درخواست:</h3>
                 <div class="detail-row">
                     <span class="detail-label">شماره درخواست:</span>
-                    <span class="detail-value">{{applicationNumber}}</span>
+                    <span>{{applicationId}}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">دانشگاه:</span>
-                    <span class="detail-value">{{universityName}}</span>
+                    <span class="detail-label">وضعیت جدید:</span>
+                    <span style="color: #4CAF50; font-weight: bold;">{{statusUpdate}}</span>
                 </div>
-                <div class="detail-row" style="border-bottom: none;">
+                <div class="detail-row">
                     <span class="detail-label">تاریخ به‌روزرسانی:</span>
-                    <span class="detail-value">امروز</span>
+                    <span>{{updateDate}}</span>
                 </div>
-                
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-                <p style="font-size: 14px; color: #6b7280; margin: 0;">پیشرفت کلی: 60%</p>
             </div>
             
-            <div class="next-step">
-                <h4 style="margin-top: 0;">⏭️ مرحله بعدی</h4>
-                <p style="margin: 0;"><strong>{{nextStep}}</strong></p>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%;"></div>
+            </div>
+            <p style="text-align: center; color: #666; font-size: 14px;">پیشرفت کلی: 60%</p>
+            
+            <div class="update-details">
+                <h3>📝 جزئیات به‌روزرسانی:</h3>
+                <p>{{details}}</p>
             </div>
             
-            <p style="color: #6b7280; font-size: 14px;">
-                برای مشاهده جزئیات کامل و پیگیری وضعیت، به داشبورد خود مراجعه کنید.
-            </p>
+            <div class="next-action">
+                <h3>⏭️ اقدام بعدی:</h3>
+                <p>{{nextAction}}</p>
+            </div>
+            
+            <div class="consultant-info">
+                <h3>👨‍🎓 مشاور شما:</h3>
+                <p><strong>{{consultantName}}</strong></p>
+                <p>برای هرگونه سؤال یا نیاز به توضیح بیشتر، می‌توانید با مشاور خود تماس بگیرید.</p>
+            </div>
+            
+            <div style="background-color: #e8f5e8; border: 1px solid #4CAF50; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3>🎯 نکات مهم:</h3>
+                <ul>
+                    <li>لطفاً پنل کاربری خود را به‌طور منظم چک کنید</li>
+                    <li>در صورت نیاز به ارسال مدارک اضافی، سریعاً اقدام کنید</li>
+                    <li>تمامی مکاتبات را از طریق پنل یا ایمیل رسمی انجام دهید</li>
+                    <li>برای تماس فوری از شماره‌های اعلام شده استفاده کنید</li>
+                </ul>
+            </div>
+            
+            <div class="contact-info">
+                <h3>📞 تماس با تیم پشتیبانی:</h3>
+                📧 ایمیل: support@applygraphy.com<br>
+                📱 تلگرام: @ApplygraphySupport<br>
+                🌐 پنل کاربری: www.applygraphy.com/dashboard<br><br>
+                <strong>مشاور شما: {{consultantName}}</strong>
+            </div>
         </div>
         
         <div class="footer">
-            <p><strong>تیم اپلای‌گرافی</strong></p>
-            <p>همیشه در کنار شما</p>
+            © 2024 Applygraphy. تمامی حقوق محفوظ است.<br>
+            شماره درخواست: {{applicationId}} | آخرین به‌روزرسانی: {{updateDate}}
         </div>
     </div>
 </body>
@@ -732,136 +571,62 @@ export const emailTemplates: EmailTemplate[] = [
     `,
   },
   {
-    id: "visa-approval",
-    name: "تأیید ویزا",
-    subject: "🎉 ویزای شما تأیید شد - {{visaType}}",
+    id: "visa-approval-congratulations",
+    name: "تبریک تأیید ویزا",
+    subject: "🎉 تبریک! ویزای شما تأیید شد - Applygraphy",
     category: "visa",
-    variables: ["userName", "visaType", "country", "approvalDate", "validityPeriod"],
     isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    textContent: `
-سلام {{userName}} عزیز،
-
-خبر خوش! ویزای شما تأیید شد.
-
-جزئیات ویزا:
-نوع ویزا: {{visaType}}
-کشور: {{country}}
-تاریخ تأیید: {{approvalDate}}
-مدت اعتبار: {{validityPeriod}}
-
-تبریک می‌گوییم! مرحله مهمی از مسیر شما تکمیل شد.
-
-با تشکر،
-تیم اپلای‌گرافی
-    `,
-    htmlContent: `
+    variables: ["customerName", "visaType", "country", "approvalDate", "nextSteps", "consultantName"],
+    content: `
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأیید ویزا</title>
+    <title>تبریک تأیید ویزا</title>
     <style>
-        body {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .celebration {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .visa-details {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #fed7aa;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #92400e;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-value {
-            color: #1f2937;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .congratulations {
-            background-color: #f0fdf4;
-            border: 2px solid #10b981;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-            text-align: center;
-        }
-        .next-journey {
-            background-color: #eff6ff;
-            border-right: 4px solid #3b82f6;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        p, li {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
+        body { font-family: 'Tahoma', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .header { text-align: center; padding: 30px 0; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border-radius: 15px 15px 0 0; margin: -20px -20px 30px -20px; }
+        .logo { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+        .celebration { font-size: 48px; margin: 20px 0; }
+        .success-message { font-size: 24px; font-weight: bold; margin: 20px 0; }
+        .visa-details { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 25px; border-radius: 12px; margin: 25px 0; border: 2px solid #4CAF50; }
+        .detail-row { display: flex; justify-content: space-between; margin: 15px 0; padding: 10px 0; border-bottom: 1px solid #dee2e6; }
+        .detail-label { font-weight: bold; color: #02153D; }
+        .detail-value { color: #4CAF50; font-weight: bold; }
+        .congratulations-box { background: linear-gradient(135deg, #FFD700, #FFA500); color: #333; padding: 25px; border-radius: 12px; text-align: center; margin: 25px 0; }
+        .next-steps { background-color: #fff3cd; border: 2px solid #ffeaa7; padding: 25px; border-radius: 12px; margin: 25px 0; }
+        .step-item { display: flex; align-items: flex-start; margin: 20px 0; }
+        .step-number { width: 35px; height: 35px; background: linear-gradient(135deg, #FF6A5C, #FF8A7C); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-left: 15px; flex-shrink: 0; }
+        .achievement-badge { background: linear-gradient(135deg, #9C27B0, #673AB7); color: white; padding: 15px 25px; border-radius: 25px; display: inline-block; margin: 15px 0; font-weight: bold; }
+        .consultant-celebration { background: linear-gradient(135deg, #02153D, #1a2b5c); color: white; padding: 25px; border-radius: 12px; margin: 25px 0; text-align: center; }
+        .contact-info { background-color: #02153D; color: white; padding: 25px; border-radius: 12px; margin: 30px 0; }
+        .footer { text-align: center; padding: 25px 0; border-top: 2px solid #4CAF50; margin-top: 30px; color: #666; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="celebration">🎉</div>
-            <h1>ویزای شما تأیید شد!</h1>
-            <p>یک قدم بزرگ به سمت آینده‌ای روشن</p>
+            <div class="celebration">🎉🎊✨</div>
+            <div class="logo">Applygraphy</div>
+            <div class="success-message">ویزای شما تأیید شد!</div>
         </div>
         
         <div class="content">
-            <p>سلام <strong>{{userName}}</strong> عزیز،</p>
-            <p>خبر فوق‌العاده‌ای برای شما داریم! ویزای شما با موفقیت تأیید شده است.</p>
+            <div class="congratulations-box">
+                <h2>🏆 تبریک {{customerName}} عزیز! 🏆</h2>
+                <p style="font-size: 18px; margin: 15px 0;">رؤیای شما به حقیقت پیوست!</p>
+                <div class="achievement-badge">🌟 موفقیت تضمین شده</div>
+            </div>
+            
+            <p style="font-size: 16px; text-align: center; margin: 25px 0;">
+                با کمال افتخار اعلام می‌کنیم که ویزای {{visaType}} شما برای {{country}} با موفقیت تأیید شده است! 
+                این دستاورد بزرگ نتیجه تلاش مشترک شما و تیم متخصص ما بوده است.
+            </p>
             
             <div class="visa-details">
-                <h3 style="margin-top: 0; color: #92400e;">📄 جزئیات ویزا</h3>
+                <h3 style="color: #4CAF50; text-align: center; margin-bottom: 20px;">📋 جزئیات ویزای تأیید شده</h3>
                 <div class="detail-row">
                     <span class="detail-label">نوع ویزا:</span>
                     <span class="detail-value">{{visaType}}</span>
@@ -874,213 +639,60 @@ export const emailTemplates: EmailTemplate[] = [
                     <span class="detail-label">تاریخ تأیید:</span>
                     <span class="detail-value">{{approvalDate}}</span>
                 </div>
-                <div class="detail-row" style="border-bottom: none;">
-                    <span class="detail-label">مدت اعتبار:</span>
-                    <span class="detail-value">{{validityPeriod}}</span>
-                </div>
-            </div>
-            
-            <div class="congratulations">
-                <h3 style="color: #065f46; margin-top: 0;">🏆 تبریک می‌گوییم!</h3>
-                <p style="margin: 0; font-size: 18px;">شما با موفقیت یکی از مهم‌ترین مراحل مسیر تحصیلی خود را پشت سر گذاشتید.</p>
-            </div>
-            
-            <div class="next-journey">
-                <h4 style="margin-top: 0;">✈️ آماده سفر؟</h4>
-                <ul style="margin: 0; padding-right: 20px;">
-                    <li>بلیط هواپیما خود را رزرو کنید</li>
-                    <li>اقامت موقت را تنظیم کنید</li>
-                    <li>مدارک سفر را آماده کنید</li>
-                    <li>با دانشگاه برای ثبت‌نام نهایی تماس بگیرید</li>
-                </ul>
-            </div>
-            
-            <p style="color: #6b7280; font-size: 14px;">
-                تیم ما همچنان برای کمک در مراحل بعدی در کنار شما خواهد بود.
-            </p>
-        </div>
-        
-        <div class="footer">
-            <p><strong>تیم اپلای‌گرافی</strong></p>
-            <p>مفتخر به موفقیت شما هستیم</p>
-        </div>
-    </div>
-</body>
-</html>
-    `,
-  },
-  {
-    id: "followup-reminder",
-    name: "یادآوری پیگیری",
-    subject: "یادآوری: {{reminderTitle}}",
-    category: "followup",
-    variables: ["userName", "reminderTitle", "dueDate", "actionRequired", "contactInfo"],
-    isActive: true,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    textContent: `
-سلام {{userName}} عزیز،
-
-یادآوری مهم برای شما:
-
-موضوع: {{reminderTitle}}
-مهلت: {{dueDate}}
-اقدام مورد نیاز: {{actionRequired}}
-
-لطفاً در اسرع وقت اقدام کنید.
-
-تماس: {{contactInfo}}
-
-با تشکر،
-تیم اپلای‌گرافی
-    `,
-    htmlContent: `
-<!DOCTYPE html>
-<html dir="rtl" lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>یادآوری مهم</title>
-    <style>
-        body {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            direction: rtl;
-            text-align: right;
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .content {
-            padding: 40px 30px;
-        }
-        .reminder-card {
-            background-color: #fef2f2;
-            border: 2px solid #ef4444;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 30px 0;
-        }
-        .urgent-badge {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 15px;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #fecaca;
-        }
-        .detail-label {
-            font-weight: bold;
-            color: #991b1b;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .detail-value {
-            color: #1f2937;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .action-required {
-            background-color: #fef3c7;
-            border: 2px solid #f59e0b;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 30px 0;
-        }
-        .contact-info {
-            background-color: #eff6ff;
-            border-right: 4px solid #3b82f6;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        .clock-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        h1, h2, h3, h4 {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-        p, li {
-            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="clock-icon">⏰</div>
-            <h1>یادآوری مهم</h1>
-            <p>اقدام فوری مورد نیاز است</p>
-        </div>
-        
-        <div class="content">
-            <p>سلام <strong>{{userName}}</strong> عزیز،</p>
-            <p>یادآوری مهمی برای شما داریم که نیاز به توجه فوری دارد:</p>
-            
-            <div class="reminder-card">
-                <div class="urgent-badge">فوری</div>
                 <div class="detail-row">
-                    <span class="detail-label">موضوع:</span>
-                    <span class="detail-value">{{reminderTitle}}</span>
-                </div>
-                <div class="detail-row" style="border-bottom: none;">
-                    <span class="detail-label">مهلت:</span>
-                    <span class="detail-value" style="color: #ef4444; font-weight: bold;">{{dueDate}}</span>
+                    <span class="detail-label">وضعیت:</span>
+                    <span class="detail-value">✅ تأیید شده</span>
                 </div>
             </div>
             
-            <div class="action-required">
-                <h4 style="margin-top: 0; color: #92400e;">📋 اقدام مورد نیاز</h4>
-                <p style="margin: 0;"><strong>{{actionRequired}}</strong></p>
-            </div>
-            
-            <div class="contact-info">
-                <h4 style="margin-top: 0;">📞 تماس با ما</h4>
-                <p style="margin: 0;">{{contactInfo}}</p>
-                <p style="margin: 10px 0 0 0; font-size: 14px; color: #6b7280;">
-                    تیم پشتیبانی ما آماده کمک به شما است
+            <div class="consultant-celebration">
+                <h3>👨‍🎓 پیام از مشاور شما</h3>
+                <p style="font-size: 16px; line-height: 1.8;">
+                    "<strong>{{consultantName}}</strong> از طرف تمام تیم Applygraphy، صمیمانه به شما تبریک می‌گویم! 
+                    موفقیت شما، موفقیت ماست. امیدواریم این آغاز مسیری پربرکت برای آینده‌تان باشد."
                 </p>
             </div>
             
-            <p style="color: #ef4444; font-weight: bold; text-align: center; font-size: 16px;">
-                ⚠️ لطفاً در اسرع وقت اقدام کنید
-            </p>
+            <div class="next-steps">
+                <h3 style="color: #FF6A5C;">🚀 مراحل بعدی - آماده سفر شوید!</h3>
+                {{nextSteps}}
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #e8f5e8, #d4edda); border: 2px solid #4CAF50; padding: 25px; border-radius: 12px; margin: 25px 0;">
+                <h3 style="color: #155724;">🎁 هدیه ویژه برای شما:</h3>
+                <ul style="line-height: 2;">
+                    <li><strong>مشاوره رایگان</strong> برای تنظیمات اولیه در کشور مقصد</li>
+                    <li><strong>راهنمای کامل</strong> زندگی در {{country}}</li>
+                    <li><strong>تخفیف 20%</strong> برای خدمات آینده</li>
+                    <li><strong>عضویت در کلاب</strong> دانشجویان موفق Applygraphy</li>
+                    <li><strong>پشتیبانی 6 ماهه</strong> پس از سفر</li>
+                </ul>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 25px; border-radius: 12px; margin: 25px 0; text-align: center;">
+                <h3 style="color: #02153D;">📸 به اشتراک بگذارید!</h3>
+                <p>این لحظه خوشحالی را با دوستان و خانواده‌تان به اشتراک بگذارید و الهام‌بخش دیگران باشید!</p>
+                <p style="font-size: 14px; color: #666;">
+                    #ApplygraphySuccess #VisaApproved #DreamsComeTrue
+                </p>
+            </div>
+            
+            <div class="contact-info">
+                <h3>📞 همچنان در کنار شما هستیم:</h3>
+                📧 ایمیل: support@applygraphy.com<br>
+                📱 تلگرام: @ApplygraphySupport<br>
+                🌐 پنل کاربری: www.applygraphy.com/dashboard<br>
+                📞 خط ویژه موفقان: +98-21-XXXXXXX<br><br>
+                <strong>مشاور شما: {{consultantName}}</strong>
+            </div>
         </div>
         
         <div class="footer">
-            <p><strong>تیم اپلای‌گرافی</strong></p>
-            <p>همیشه در خدمت شما</p>
+            <p style="font-size: 16px; color: #4CAF50; font-weight: bold;">
+                🌟 شما جزو 5% موفق‌ترین متقاضیان ما هستید! 🌟
+            </p>
+            © 2024 Applygraphy. تمامی حقوق محفوظ است.<br>
+            تاریخ تأیید ویزا: {{approvalDate}}
         </div>
     </div>
 </body>
@@ -1097,33 +709,25 @@ export function getTemplatesByCategory(category: EmailTemplate["category"]): Ema
   return emailTemplates.filter((template) => template.category === category && template.isActive)
 }
 
-export function getAllActiveTemplates(): EmailTemplate[] {
-  return emailTemplates.filter((template) => template.isActive)
-}
+export function replaceTemplateVariables(content: string, variables: Record<string, string>): string {
+  let processedContent = content
 
-export function renderTemplate(
-  template: EmailTemplate,
-  variables: Record<string, string>,
-): {
-  subject: string
-  htmlContent: string
-  textContent: string
-} {
-  let subject = template.subject
-  let htmlContent = template.htmlContent
-  let textContent = template.textContent
-
-  // Replace variables in all content
   Object.entries(variables).forEach(([key, value]) => {
-    const placeholder = `{{${key}}}`
-    subject = subject.replace(new RegExp(placeholder, "g"), value)
-    htmlContent = htmlContent.replace(new RegExp(placeholder, "g"), value)
-    textContent = textContent.replace(new RegExp(placeholder, "g"), value)
+    const regex = new RegExp(`{{${key}}}`, "g")
+    processedContent = processedContent.replace(regex, value)
   })
 
-  return {
-    subject,
-    htmlContent,
-    textContent,
-  }
+  return processedContent
+}
+
+export function validateTemplateVariables(template: EmailTemplate, variables: Record<string, string>): string[] {
+  const missingVariables: string[] = []
+
+  template.variables.forEach((variable) => {
+    if (!variables[variable] || variables[variable].trim() === "") {
+      missingVariables.push(variable)
+    }
+  })
+
+  return missingVariables
 }
