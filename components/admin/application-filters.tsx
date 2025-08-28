@@ -16,8 +16,8 @@ export function ApplicationFilters({ onFiltersChange }: ApplicationFiltersProps)
   const [filters, setFilters] = useState({
     search: "",
     status: "",
-    university: "",
     country: "",
+    university: "",
     dateRange: "",
   })
 
@@ -31,8 +31,8 @@ export function ApplicationFilters({ onFiltersChange }: ApplicationFiltersProps)
     const emptyFilters = {
       search: "",
       status: "",
-      university: "",
       country: "",
+      university: "",
       dateRange: "",
     }
     setFilters(emptyFilters)
@@ -40,25 +40,25 @@ export function ApplicationFilters({ onFiltersChange }: ApplicationFiltersProps)
   }
 
   return (
-    <Card>
+    <Card className="mb-6">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Filter className="h-5 w-5" />
           فیلترهای درخواست‌ها
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <div className="space-y-2">
             <Label htmlFor="search">جستجو</Label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 id="search"
-                placeholder="نام، ایمیل یا شماره درخواست..."
+                placeholder="نام، ایمیل یا شناسه..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange("search", e.target.value)}
-                className="pl-10"
+                className="pr-10"
               />
             </div>
           </div>
@@ -70,7 +70,6 @@ export function ApplicationFilters({ onFiltersChange }: ApplicationFiltersProps)
                 <SelectValue placeholder="انتخاب وضعیت" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">همه وضعیت‌ها</SelectItem>
                 <SelectItem value="pending">در انتظار بررسی</SelectItem>
                 <SelectItem value="reviewing">در حال بررسی</SelectItem>
                 <SelectItem value="approved">تایید شده</SelectItem>
@@ -81,47 +80,39 @@ export function ApplicationFilters({ onFiltersChange }: ApplicationFiltersProps)
           </div>
 
           <div className="space-y-2">
-            <Label>دانشگاه</Label>
-            <Select value={filters.university} onValueChange={(value) => handleFilterChange("university", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="انتخاب دانشگاه" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">همه دانشگاه‌ها</SelectItem>
-                <SelectItem value="harvard">دانشگاه هاروارد</SelectItem>
-                <SelectItem value="mit">دانشگاه MIT</SelectItem>
-                <SelectItem value="stanford">دانشگاه استنفورد</SelectItem>
-                <SelectItem value="oxford">دانشگاه آکسفورد</SelectItem>
-                <SelectItem value="cambridge">دانشگاه کمبریج</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>کشور</Label>
+            <Label>کشور مقصد</Label>
             <Select value={filters.country} onValueChange={(value) => handleFilterChange("country", value)}>
               <SelectTrigger>
                 <SelectValue placeholder="انتخاب کشور" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">همه کشورها</SelectItem>
-                <SelectItem value="usa">آمریکا</SelectItem>
-                <SelectItem value="uk">انگلستان</SelectItem>
-                <SelectItem value="canada">کانادا</SelectItem>
                 <SelectItem value="germany">آلمان</SelectItem>
+                <SelectItem value="canada">کانادا</SelectItem>
                 <SelectItem value="australia">استرالیا</SelectItem>
+                <SelectItem value="uk">انگلستان</SelectItem>
+                <SelectItem value="usa">آمریکا</SelectItem>
+                <SelectItem value="netherlands">هلند</SelectItem>
+                <SelectItem value="france">فرانسه</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>دانشگاه</Label>
+            <Input
+              placeholder="نام دانشگاه..."
+              value={filters.university}
+              onChange={(e) => handleFilterChange("university", e.target.value)}
+            />
           </div>
 
           <div className="space-y-2">
             <Label>بازه زمانی</Label>
             <Select value={filters.dateRange} onValueChange={(value) => handleFilterChange("dateRange", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="انتخاب بازه زمانی" />
+                <SelectValue placeholder="انتخاب بازه" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">همه زمان‌ها</SelectItem>
                 <SelectItem value="today">امروز</SelectItem>
                 <SelectItem value="week">هفته گذشته</SelectItem>
                 <SelectItem value="month">ماه گذشته</SelectItem>
@@ -130,13 +121,13 @@ export function ApplicationFilters({ onFiltersChange }: ApplicationFiltersProps)
               </SelectContent>
             </Select>
           </div>
+        </div>
 
-          <div className="flex items-end">
-            <Button variant="outline" onClick={clearFilters} className="w-full bg-transparent">
-              <X className="h-4 w-4 mr-2" />
-              پاک کردن فیلترها
-            </Button>
-          </div>
+        <div className="flex justify-end mt-4">
+          <Button variant="outline" onClick={clearFilters} className="flex items-center gap-2 bg-transparent">
+            <X className="h-4 w-4" />
+            پاک کردن فیلترها
+          </Button>
         </div>
       </CardContent>
     </Card>

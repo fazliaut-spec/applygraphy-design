@@ -4,20 +4,18 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MessageSquare, Search, Clock, AlertCircle, CheckCircle, User, Calendar } from "lucide-react"
+import { MessageSquare, Search, Filter, Clock, AlertCircle, CheckCircle, User, Calendar } from "lucide-react"
 
 interface Message {
   id: string
-  subject: string
-  content: string
   senderName: string
   senderEmail: string
-  senderAvatar?: string
+  subject: string
+  content: string
   priority: "low" | "medium" | "high" | "urgent"
-  status: "unread" | "read" | "replied" | "archived"
-  category: "general" | "application" | "visa" | "academic" | "technical"
+  status: "unread" | "read" | "replied" | "closed"
+  category: "general" | "application" | "visa" | "technical" | "complaint"
   createdAt: string
   lastReplyAt?: string
 }
@@ -37,38 +35,38 @@ export function AdminMessagesList({ onMessageSelect, selectedMessageId }: AdminM
   const messages: Message[] = [
     {
       id: "1",
-      subject: "سوال در مورد پردازش درخواست",
-      content: "سلام، می‌خواستم بدانم درخواست من چه وضعیتی دارد؟",
       senderName: "علی احمدی",
       senderEmail: "ali@example.com",
-      priority: "medium",
+      subject: "سوال در مورد درخواست ویزا",
+      content: "سلام، من در مورد وضعیت درخواست ویزای خود سوال دارم...",
+      priority: "high",
       status: "unread",
-      category: "application",
+      category: "visa",
       createdAt: "2024-01-15T10:30:00Z",
     },
     {
       id: "2",
+      senderName: "مریم کریمی",
+      senderEmail: "maryam@example.com",
       subject: "مشکل در آپلود مدارک",
-      content: "هنگام آپلود مدارک با خطا مواجه می‌شوم.",
-      senderName: "فاطمه کریمی",
-      senderEmail: "fateme@example.com",
-      priority: "high",
+      content: "من نمی‌توانم مدارک خود را آپلود کنم. لطفاً راهنمایی کنید.",
+      priority: "medium",
       status: "read",
       category: "technical",
-      createdAt: "2024-01-14T15:45:00Z",
-      lastReplyAt: "2024-01-14T16:00:00Z",
+      createdAt: "2024-01-14T14:20:00Z",
+      lastReplyAt: "2024-01-14T15:30:00Z",
     },
     {
       id: "3",
-      subject: "اطلاعات ویزای تحصیلی",
-      content: "لطفاً اطلاعات کاملی در مورد ویزای تحصیلی آلمان ارائه دهید.",
-      senderName: "محمد رضایی",
-      senderEmail: "mohammad@example.com",
+      senderName: "حسن رضایی",
+      senderEmail: "hassan@example.com",
+      subject: "درخواست مشاوره تحصیلی",
+      content: "برای انتخاب رشته و دانشگاه نیاز به مشاوره دارم.",
       priority: "low",
       status: "replied",
-      category: "visa",
+      category: "general",
       createdAt: "2024-01-13T09:15:00Z",
-      lastReplyAt: "2024-01-13T14:30:00Z",
+      lastReplyAt: "2024-01-13T16:45:00Z",
     },
   ]
 
@@ -80,6 +78,23 @@ export function AdminMessagesList({ onMessageSelect, selectedMessageId }: AdminM
         return "bg-orange-100 text-orange-800"
       case "medium":
         return "bg-yellow-100 text-yellow-800"
+      case "low":
+        return "bg-green-100 text-green-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "unread":
+        return "bg-blue-100 text-blue-800"
+      case "read":
+        return "bg-gray-100 text-gray-800"
+      case "replied":
+        return "bg-green-100 text-green-800"
+      case "closed":
+        return "bg-purple-100 text-purple-800"
       default:
         return "bg-gray-100 text-gray-800"
     }
@@ -88,23 +103,23 @@ export function AdminMessagesList({ onMessageSelect, selectedMessageId }: AdminM
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "unread":
-        return <AlertCircle className="h-4 w-4 text-blue-500" />
+        return <AlertCircle className="h-3 w-3" />
       case "read":
-        return <Clock className="h-4 w-4 text-yellow-500" />
+        return <Clock className="h-3 w-3" />
       case "replied":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
-      case "archived":
-        return <CheckCircle className="h-4 w-4 text-gray-500" />
+        return <CheckCircle className="h-3 w-3" />
+      case "closed":
+        return <CheckCircle className="h-3 w-3" />
       default:
-        return <MessageSquare className="h-4 w-4" />
+        return <Clock className="h-3 w-3" />
     }
   }
 
   const filteredMessages = messages.filter((message) => {
     const matchesSearch =
-      message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
       message.senderName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      message.content.toLowerCase().includes(searchTerm.toLowerCase())
+      message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      message.senderEmail.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === "all" || message.status === statusFilter
     const matchesPriority = priorityFilter === "all" || message.priority === priorityFilter
     const matchesCategory = categoryFilter === "all" || message.category === categoryFilter
@@ -113,26 +128,27 @@ export function AdminMessagesList({ onMessageSelect, selectedMessageId }: AdminM
   })
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
-          پیام‌ها ({filteredMessages.length})
-        </CardTitle>
+    <div className="space-y-4">
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            فیلترهای پیام‌ها
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="جستجو در پیام‌ها..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pr-10"
+              />
+            </div>
 
-        {/* Filters */}
-        <div className="space-y-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="جستجو در پیام‌ها..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger>
                 <SelectValue placeholder="وضعیت" />
@@ -142,7 +158,7 @@ export function AdminMessagesList({ onMessageSelect, selectedMessageId }: AdminM
                 <SelectItem value="unread">خوانده نشده</SelectItem>
                 <SelectItem value="read">خوانده شده</SelectItem>
                 <SelectItem value="replied">پاسخ داده شده</SelectItem>
-                <SelectItem value="archived">آرشیو شده</SelectItem>
+                <SelectItem value="closed">بسته شده</SelectItem>
               </SelectContent>
             </Select>
 
@@ -168,84 +184,89 @@ export function AdminMessagesList({ onMessageSelect, selectedMessageId }: AdminM
                 <SelectItem value="general">عمومی</SelectItem>
                 <SelectItem value="application">درخواست</SelectItem>
                 <SelectItem value="visa">ویزا</SelectItem>
-                <SelectItem value="academic">تحصیلی</SelectItem>
                 <SelectItem value="technical">فنی</SelectItem>
+                <SelectItem value="complaint">شکایت</SelectItem>
               </SelectContent>
             </Select>
           </div>
-        </div>
-      </CardHeader>
+        </CardContent>
+      </Card>
 
-      <CardContent className="p-0">
-        <div className="space-y-1 max-h-[600px] overflow-y-auto">
-          {filteredMessages.map((message) => (
-            <div
-              key={message.id}
-              className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors ${
-                selectedMessageId === message.id ? "bg-blue-50 border-blue-200" : ""
-              }`}
-              onClick={() => onMessageSelect(message)}
-            >
-              <div className="flex items-start gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={message.senderAvatar || "/placeholder.svg"} />
-                  <AvatarFallback>
-                    <User className="h-5 w-5" />
-                  </AvatarFallback>
-                </Avatar>
-
+      {/* Messages List */}
+      <div className="space-y-2">
+        {filteredMessages.map((message) => (
+          <Card
+            key={message.id}
+            className={`cursor-pointer transition-colors hover:bg-gray-50 ${
+              selectedMessageId === message.id ? "ring-2 ring-blue-500" : ""
+            }`}
+            onClick={() => onMessageSelect(message)}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-sm truncate">{message.senderName}</h4>
-                      <Badge className={getPriorityColor(message.priority)} variant="secondary">
-                        {message.priority === "urgent" && "فوری"}
-                        {message.priority === "high" && "بالا"}
-                        {message.priority === "medium" && "متوسط"}
-                        {message.priority === "low" && "پایین"}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(message.status)}
-                      <span className="text-xs text-gray-500">
-                        {new Date(message.createdAt).toLocaleDateString("fa-IR")}
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <User className="h-4 w-4 text-gray-500" />
+                    <span className="font-medium">{message.senderName}</span>
+                    <span className="text-sm text-gray-500">({message.senderEmail})</span>
                   </div>
 
-                  <h5 className="font-medium text-sm mb-1 truncate">{message.subject}</h5>
+                  <h3 className="font-semibold text-gray-900 mb-1 truncate">{message.subject}</h3>
 
-                  <p className="text-sm text-gray-600 line-clamp-2 mb-2">{message.content}</p>
+                  <p className="text-sm text-gray-600 line-clamp-2 mb-3">{message.content}</p>
 
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="text-xs">
-                      {message.category === "general" && "عمومی"}
-                      {message.category === "application" && "درخواست"}
-                      {message.category === "visa" && "ویزا"}
-                      {message.category === "academic" && "تحصیلی"}
-                      {message.category === "technical" && "فنی"}
-                    </Badge>
-
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <Calendar className="h-3 w-3" />
+                    <span>{new Date(message.createdAt).toLocaleDateString("fa-IR")}</span>
                     {message.lastReplyAt && (
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Calendar className="h-3 w-3" />
-                        آخرین پاسخ: {new Date(message.lastReplyAt).toLocaleDateString("fa-IR")}
-                      </div>
+                      <>
+                        <span>•</span>
+                        <span>آخرین پاسخ: {new Date(message.lastReplyAt).toLocaleDateString("fa-IR")}</span>
+                      </>
                     )}
                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
 
-          {filteredMessages.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p>پیامی یافت نشد</p>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+                <div className="flex flex-col items-end gap-2 mr-4">
+                  <Badge className={getPriorityColor(message.priority)}>
+                    {message.priority === "urgent" && "فوری"}
+                    {message.priority === "high" && "بالا"}
+                    {message.priority === "medium" && "متوسط"}
+                    {message.priority === "low" && "پایین"}
+                  </Badge>
+
+                  <Badge className={getStatusColor(message.status)}>
+                    {getStatusIcon(message.status)}
+                    <span className="mr-1">
+                      {message.status === "unread" && "خوانده نشده"}
+                      {message.status === "read" && "خوانده شده"}
+                      {message.status === "replied" && "پاسخ داده شده"}
+                      {message.status === "closed" && "بسته شده"}
+                    </span>
+                  </Badge>
+
+                  <Badge variant="outline">
+                    {message.category === "general" && "عمومی"}
+                    {message.category === "application" && "درخواست"}
+                    {message.category === "visa" && "ویزا"}
+                    {message.category === "technical" && "فنی"}
+                    {message.category === "complaint" && "شکایت"}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredMessages.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-8">
+            <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-500">هیچ پیامی یافت نشد</p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   )
 }
