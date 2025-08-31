@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 import { ExamCard } from "@/components/cards/exam-card"
 import { Footer } from "@/components/layout/footer"
 import { Navbar } from "@/components/layout/navbar"

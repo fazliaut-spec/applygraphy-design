@@ -1,26 +1,17 @@
-import { type NextRequest, NextResponse } from "next/server"
-import Stripe from "stripe"
+export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-11-20.acacia",
-})
+// از Response استاندارد استفاده می‌کنیم تا تداخل پیش نیاد
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
+}
 
-export async function POST(request: NextRequest) {
-  try {
-    const { paymentIntentId } = await request.json()
+export async function POST() {
+  return json({ ok: true });
+}
 
-    if (!paymentIntentId) {
-      return NextResponse.json({ error: "Payment Intent ID is required" }, { status: 400 })
-    }
-
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
-
-    return NextResponse.json({
-      status: paymentIntent.status,
-      paymentIntent,
-    })
-  } catch (error) {
-    console.error("Error confirming payment:", error)
-    return NextResponse.json({ error: "Failed to confirm payment" }, { status: 500 })
-  }
+export async function GET() {
+  return json({ ok: true });
 }

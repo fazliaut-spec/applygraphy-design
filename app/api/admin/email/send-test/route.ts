@@ -1,36 +1,29 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { getTemplateById } from "@/lib/email/templates"
-import { emailSender } from "@/lib/email/sender"
+// app/api/admin/email/send-test/route.ts
+import nodemailer from "nodemailer";
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const { templateId, to, variables } = await request.json()
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,                 // مثلا smtp.gmail.com
+      port: Number(process.env.SMTP_PORT || 587),  // 587
+      secure: false,                                // برای TLS روی 587
+      auth: {
+        user: process.env.SMTP_USER,               // applygraphy@gmail.com
+        pass: process.env.SMTP_PASS,               // پسورد/اپ‌پسورد
+      },
+    });
 
-    if (!templateId || !to) {
-      return NextResponse.json({ error: "Template ID and recipient email are required" }, { status: 400 })
-    }
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+      to: process.env.SMTP_USER,                   // تست: به ایمیل خودت
+      subject: "Applygraphy SMTP test",
+      text: "SMTP configuration is working ✅",
+    });
 
-    const template = getTemplateById(templateId)
-    if (!template) {
-      return NextResponse.json({ error: "Template not found" }, { status: 404 })
-    }
-
-    const result = await emailSender.sendEmail({
-      to,
-      template,
-      variables: variables || {},
-    })
-
-    if (result.success) {
-      return NextResponse.json({
-        success: true,
-        messageId: result.messageId,
-      })
-    } else {
-      return NextResponse.json({ error: result.error }, { status: 500 })
-    }
-  } catch (error) {
-    console.error("Error sending test email:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ ok: true });
+  } catch (e: any) {
+    console.error("Email send error:", e?.message);
+    return NextResponse.json({ ok: false, error: e?.message }, { status: 500 });
   }
 }

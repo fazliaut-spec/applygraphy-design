@@ -1,35 +1,20 @@
-import { type NextRequest, NextResponse } from "next/server"
-import Stripe from "stripe"
+// app/api/payment/create-intent/route.ts
+export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-11-20.acacia",
-})
-
-export async function POST(request: NextRequest) {
-  try {
-    const { serviceId, amount, currency = "usd" } = await request.json()
-
-    if (!serviceId || !amount) {
-      return NextResponse.json({ error: "Service ID and amount are required" }, { status: 400 })
-    }
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency,
-      metadata: {
-        serviceId,
-      },
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    })
-
-    return NextResponse.json({
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
-    })
-  } catch (error) {
-    console.error("Error creating payment intent:", error)
-    return NextResponse.json({ error: "Failed to create payment intent" }, { status: 500 })
-  }
+// از Response استاندارد استفاده می‌کنیم تا تداخل پیش نیاد
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
 }
+
+export async function POST() {
+  // TODO: اینجا بعداً Stripe/زرین‌پال/نکست‌پی اضافه می‌کنیم
+  return json({ ok: true, intentId: 'stub' });
+}
+
+export async function GET() {
+  return json({ ok: true });
+}
+
