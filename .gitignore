@@ -25,3 +25,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# local
+.env
+.next/
+node_modules/
+*.save
+*.bak
+lib/generated/
