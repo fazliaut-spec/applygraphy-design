@@ -1,18 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ['placeholder.svg', 'images.unsplash.com', 'via.placeholder.com'],
-    unoptimized: true
-  },
-  experimental: {
-    optimizePackageImports: ['lucide-react']
-  },
-  eslint: {
-    ignoreDuringBuilds: true
-  },
-  typescript: {
-    ignoreBuildErrors: true
+  reactStrictMode: true,
+  poweredByHeader: false,
+  i18n: {
+    locales: ["fa", "en"],
+    defaultLocale: "fa",
+    localeDetection: true
   }
-}
-
-export default nextConfig
+};
+export default nextConfig;
